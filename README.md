@@ -4,7 +4,7 @@
 ![CI](https://img.shields.io/badge/ci-passing-brightgreen)
 ![Architecture](https://img.shields.io/badge/design-layered-informational)
 ![Safety](https://img.shields.io/badge/safety-deterministic-critical)
-![Target Build](https://img.shields.io/badge/hardware_budget-$2000–$4000-orange)
+![Target Build](https://img.shields.io/badge/hardware_budget-$2000%E2%80%93$4000-orange)
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Transforming manual jump adjustment into synchronized, safety supervised motion.**
 
-Smart Jump is a control architecture prototype that models Bluetooth operated jump standards designed for performance riders and professional training environments.
+Smart Jump is a deterministic control architecture prototype that models Bluetooth operated jump standards for performance riders and professional training environments.
 
-This repository focuses on deterministic control logic, synchronization guarantees, and layered safety enforcement prior to hardware deployment.
+This repository focuses on synchronization guarantees, safety invariants, and layered fault enforcement before any physical hardware deployment.
 
 ---
 
@@ -26,7 +26,7 @@ The animation below shows:
 - Forced desynchronization during movement  
 - Automatic coordinated fault stop  
 
-![Smart Jump Demo](docs/demo.gif?raw=1&v=5792e2d)
+![Smart Jump Demo](docs/demo.gif?raw=1)
 
 ---
 
@@ -52,7 +52,11 @@ That interruption compounds across sessions.
 It costs time.  
 It breaks rhythm.  
 It adds physical strain.  
-It limits solo training.
+It limits solo training.  
+
+Riders training alone lose valuable momentum.  
+Trainers with injuries face unnecessary strain.  
+Facilities waste time that could be spent improving performance.
 
 ---
 
@@ -106,7 +110,7 @@ flowchart TB
     DevB --> MotB[Actuator B]
 ```
 
-Detailed state machines:
+Detailed design artifacts:
 
 - docs/09_state_diagrams.md  
 - docs/11_system_architecture.md  
@@ -117,9 +121,7 @@ Detailed state machines:
 
 Safety enforcement exists at two independent layers.
 
-### Controller Layer
-
-Each standard guarantees:
+### Controller Layer Guarantees
 
 - Motion only in idle_ready  
 - Stop accepted in all states  
@@ -127,9 +129,7 @@ Each standard guarantees:
 - Fault latched until reset  
 - Limit or overload triggers immediate halt  
 
-### Orchestrator Layer
-
-The mobile app guarantees:
+### Orchestrator Layer Guarantees
 
 - Continuous telemetry monitoring  
 - Configurable desynchronization tolerance  
@@ -195,18 +195,37 @@ Current prototype includes:
 - Coordinated stop behavior  
 - Deterministic state machine validation  
 - CI integrated safety testing  
+- Installable CLI entry point  
 
-Run tests:
+---
+
+## Running the Prototype
+
+Install in editable mode:
 
 ```bash
-python3 -m pytest -q
+python3 -m pip install -e ".[dev]"
 ```
 
-Run simulation:
+Run automated tests:
 
 ```bash
-python3 demo_run.py
+smartjump test
 ```
+
+Run the interactive simulation:
+
+```bash
+smartjump demo
+```
+
+The demo validates:
+
+- Synchronized motion to preset  
+- Continuous heartbeat supervision  
+- Forced desynchronization detection  
+- Coordinated fault stop  
+- Deterministic state transitions  
 
 ---
 
