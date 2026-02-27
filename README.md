@@ -1,4 +1,10 @@
-# Smart Jump Prototype
+# 
+#   ███████╗███╗   ███╗ █████╗ ██████╗ ████████╗      ██╗██╗   ██╗███╗   ███╗██████╗ 
+#   ██╔════╝████╗ ████║██╔══██╗██╔══██╗╚══██╔══╝      ██║██║   ██║████╗ ████║██╔══██╗
+#   ███████╗██╔████╔██║███████║██████╔╝   ██║         ██║██║   ██║██╔████╔██║██████╔╝
+#   ╚════██║██║╚██╔╝██║██╔══██║██╔══██╗   ██║    ██   ██║██║   ██║██║╚██╔╝██║██╔═══╝ 
+#   ███████║██║ ╚═╝ ██║██║  ██║██║  ██║   ██║    ╚█████╔╝╚██████╔╝██║ ╚═╝ ██║██║     
+#   ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝     ╚════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝     
 
 ![Status](https://img.shields.io/badge/status-prototype-blue)
 ![CI](https://img.shields.io/badge/ci-passing-brightgreen)
@@ -8,103 +14,62 @@
 
 ---
 
-# Automated Jump Infrastructure for Mounted Training
+### Intelligent Jump Infrastructure for Mounted Training
 
-A synchronization-aware, safety-first control system that converts manual jump height adjustment into deterministic, supervised motion.
-
-This project models the control architecture behind a mounted Bluetooth-operated jump standard system designed for performance riders and professional training facilities.
+A synchronization-aware, safety-first control system that transforms manual height adjustment into supervised, deterministic motion.
 
 ---
 
-## The Core Thesis
+## The Vision
 
 Jump training should be limited by skill — not by logistics.
 
-In modern show jumping environments, height adjustments occur repeatedly within a single session:
+Today, height changes require dismounting, lifting heavy poles, repositioning cups, and remounting.  
+This process interrupts rhythm, consumes time, and adds physical strain.
 
-Warmup → Progression → Technical combinations → Competition height → Reset
+Smart Jump converts that manual friction into synchronized infrastructure.
 
-Each transition today requires:
-
-Dismount → Lift poles → Adjust cups → Remount → Resume
-
-That friction compounds.
-
-It costs time.  
-It breaks rhythm.  
-It adds physical strain.  
-It limits solo training.  
-
-Smart Jump reframes height adjustment as infrastructure — not labor.
+Mounted preset → coordinated motion → supervised stop → locked safe state.
 
 ---
 
-## Why Now
+## Why It Matters
 
-Training environments are modernizing.
-
-- Riders train independently more often.
-- Barns optimize lesson throughput.
-- Technology adoption in sport is accelerating.
-- Wearables, performance analytics, and smart equipment are increasing.
-
-Yet jump adjustment remains entirely manual.
-
-The opportunity is not novelty.  
-The opportunity is operational efficiency inside an unchanged workflow.
-
----
-
-## System Concept
-
-The system consists of:
-
-Two independent jump standards  
-One supervisory mobile orchestrator  
-Bluetooth Low Energy communication  
-Dual-layer safety enforcement  
-
-Each standard is a self-contained safety device.
-
-The mounted application acts as synchronization authority.
-
-Motion is supervised at every layer.
+> Every interruption during training compounds across riders, sessions, and facilities.  
+> Smart infrastructure preserves momentum.
 
 ---
 
 ## Operational Impact
 
-### Time & Rhythm
+### Efficiency
 
-- Eliminates repeated mount/dismount cycles  
-- Preserves training momentum  
-- Increases productive arena minutes  
+• Eliminates repeated mount/dismount cycles  
+• Preserves rhythm between sets  
+• Increases usable arena time  
 
 ### Physical Strain Reduction
 
-- Removes repetitive pole lifting  
-- Reduces instructor fatigue  
-- Supports injured trainers  
+• Removes repetitive pole lifting  
+• Reduces instructor fatigue  
+• Enables injured trainers to continue working  
 
-### Solo Training Enablement
+### Solo Capability
 
-- Safe mounted height adjustment  
-- No ground crew required  
-- Increased autonomy  
-
-### Facility Differentiation
-
-- Technology-forward positioning  
-- Premium infrastructure signaling  
-- Competitive branding advantage  
+• Mounted adjustment without assistance  
+• Safe synchronized movement  
+• No ground crew required  
 
 ---
 
-## Architecture Overview
+## System Architecture
 
-The control model is layered and deterministic.
+The control model is layered.
 
-### End-to-End Data Flow
+Each standard is an independent safety device.  
+The mobile app acts as supervisory authority.
+
+### End-to-End Flow
 
 ```mermaid
 flowchart TB
@@ -118,125 +83,107 @@ flowchart TB
     App -->|BLE Write| HbB[Heartbeat RX - Standard B]
     TelB[Telemetry TX - Standard B] -->|BLE Notify| App
 
-    CmdA --> DevA[Controller A State Machine]
+    CmdA --> DevA[Controller A]
     HbA --> DevA
     DevA --> MotA[Actuator A]
 
-    CmdB --> DevB[Controller B State Machine]
+    CmdB --> DevB[Controller B]
     HbB --> DevB
     DevB --> MotB[Actuator B]
 ```
 
 ---
 
-## Safety Architecture
+## Safety Model
 
-Safety enforcement exists at two independent layers.
+Dual-layer protection ensures deterministic behavior.
 
-### Controller Layer (Local Authority)
-
-The standard guarantees:
+### Controller Guarantees
 
 - Motion only in idle_ready  
 - Stop accepted in all states  
-- Heartbeat timeout → fault  
-- Fault latched until explicit reset  
-- Limit or overload triggers immediate halt  
+- Heartbeat timeout triggers fault  
+- Fault latched until reset  
+- Limit or overload causes immediate halt  
 
-### Orchestrator Layer (Supervisory Authority)
+### Orchestrator Guarantees
 
-The app guarantees:
+- Continuous telemetry supervision  
+- Configurable desync tolerance  
+- Coordinated stop across standards  
+- Fault propagation  
+- Explicit reset required before reactivation  
 
-- Continuous telemetry monitoring  
-- Configurable desynchronization tolerance  
-- Coordinated stop across both standards  
-- Device fault propagation  
-- Explicit reset before reactivation  
-
-If either standard deviates beyond tolerance, motion halts across the system.
-
-All invariants are validated through deterministic simulation.
+All invariants validated via deterministic simulation.
 
 ---
 
-## Technical Capabilities
+## Demo
 
-The current prototype implements:
+Below is a representative simulation run showing synchronized motion and desync fault handling.
 
-- BLE contract modeling
-- Dual-controller synchronization logic
-- Heartbeat supervision
-- Configurable desync tolerance
-- Deterministic state machines
-- Coordinated fault handling
-- CI-validated safety tests
+<!-- Replace with actual GIF once recorded -->
+![Demo Placeholder](docs/demo_placeholder.gif)
 
-This repository models control logic prior to hardware deployment.
+To run locally:
+
+python3 -m pytest -q  
+python3 demo_run.py  
 
 ---
 
-## Financial Feasibility
+## Technical Scope
 
-Target build range: $2000–$4000
+Current prototype includes:
 
-Design philosophy: practical, barn-feasible engineering — not industrial overdesign.
+- BLE contract emulation  
+- Dual-controller synchronization logic  
+- Configurable desync tolerance  
+- Coordinated stop behavior  
+- Deterministic state machine validation  
+- CI safety enforcement  
 
-Key cost-sensitive areas:
+This repository models control architecture prior to hardware integration.
 
-| Category | Design Tradeoff |
-|----------|----------------|
-| Actuators | Load capacity vs speed |
+---
+
+## Financial Target
+
+Designed for feasibility within a $2000–$4000 hardware build range.
+
+Practical component strategy:
+
+| Category | Tradeoff Focus |
+|----------|---------------|
+| Actuators | Load vs speed |
 | Encoders | Precision vs cost |
-| Controller | ESP32-class MCU |
-| Power | Battery vs fixed supply |
+| MCU | ESP32-class |
+| Power | Battery vs supply |
 | Mechanical | Backlash tolerance |
-| Safety | Limit switches + hard stops |
+| Safety | Hard stops + limits |
 
-Objective: achievable upgrade for serious private facilities.
+Objective: realistic deployment for private performance barns.
 
 ---
 
-## Competitive Positioning
+## Competitive Framing
 
 | Traditional Setup | Smart Jump |
 |-------------------|------------|
-| Manual labor | Automated motion |
-| Interruptions between sets | Continuous flow |
-| Requires assistance | Solo-capable |
-| Physically repetitive | Mechanically assisted |
-| Static infrastructure | Intelligent infrastructure |
-
-This is not gadgetry.  
-It is training infrastructure modernization.
+| Manual adjustment | Automated synchronization |
+| Interrupted training | Continuous flow |
+| Physical strain | Mechanically assisted |
+| Static equipment | Intelligent infrastructure |
 
 ---
 
 ## Development Discipline
 
-The repository follows structured engineering workflow:
+Structured engineering workflow:
 
 Issue → Branch → Merge Request → CI → Merge → Close
 
-Enforced through:
-
-- Structured issue templates  
-- Structured merge request template  
-- No direct commits to main  
-- Deterministic safety validation  
-
-This mirrors safety-conscious systems development practices.
-
----
-
-## Repository Structure
-
-app/ — Orchestrator logic  
-ble/ — Firmware BLE emulator  
-tests/ — Safety validation  
-docs/ — Architecture + state diagrams  
-firmware/ — Planned embedded implementation  
-hardware/ — Mechanical planning  
-mobile_app/ — Future mounted UI  
+Enforced through templates and deterministic test validation.
 
 ---
 
@@ -244,31 +191,12 @@ mobile_app/ — Future mounted UI
 
 Phase 1 — Deterministic Control Modeling (Complete)  
 Phase 2 — ESP32 Firmware Integration  
-Phase 3 — Actuator + Encoder Hardware Validation  
+Phase 3 — Actuator + Encoder Validation  
 Phase 4 — Mechanical Load Testing  
 Phase 5 — Mounted Field Trials  
-Phase 6 — Cost Optimization & Production Modeling  
+Phase 6 — Production Cost Optimization  
 
 ---
 
-## Demonstration
-
-Run tests:
-
-python3 -m pytest -q
-
-Run simulation:
-
-python3 demo_run.py
-
-The demo validates:
-
-- Synchronized motion  
-- Desync fault detection  
-- Coordinated stop enforcement  
-- Deterministic state transitions  
-
----
-
-Smart Jump represents a transition from manual physical adjustment to synchronized, safety-controlled equestrian infrastructure.
+Smart Jump represents the modernization of equestrian training infrastructure through synchronized, safety-controlled automation.
 
