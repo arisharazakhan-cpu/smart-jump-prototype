@@ -1,0 +1,19 @@
+stages:
+  - test
+
+default:
+  image: python:3.11
+
+variables:
+  PYTHONUNBUFFERED: "1"
+
+before_script:
+  - python --version
+
+simulation_tests:
+  stage: test
+  script:
+    - python simulation/test_sync_simulator.py
+  only:
+    - main
+    - merge_requests
