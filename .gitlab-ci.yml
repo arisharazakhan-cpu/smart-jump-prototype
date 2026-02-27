@@ -13,7 +13,7 @@ before_script:
 simulation_tests:
   stage: test
   script:
-    - python simulation/test_sync_simulator.py
+    - python -m simulation.test_sync_simulator
   only:
     - main
     - merge_requests
