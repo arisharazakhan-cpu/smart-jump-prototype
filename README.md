@@ -28,32 +28,6 @@ The animation below shows:
 
 ![Smart Jump Demo](docs/demo.gif)
 
-### Generate the Demo Recording
-
-Record the terminal session:
-
-```bash
-brew install asciinema
-asciinema rec docs/demo.cast
-python3 demo_run.py
-# Press Ctrl+D to stop recording
-```
-
-Convert to GIF:
-
-```bash
-brew install agg
-agg docs/demo.cast docs/demo.gif
-```
-
-Commit the animation:
-
-```bash
-git add docs/demo.cast docs/demo.gif
-git commit -m "docs: add recorded demo animation"
-git push
-```
-
 ---
 
 ## The Problem
