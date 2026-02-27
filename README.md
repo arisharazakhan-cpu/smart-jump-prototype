@@ -18,6 +18,44 @@ This repository focuses on deterministic control logic, synchronization guarante
 
 ---
 
+## Live Demonstration
+
+The animation below shows:
+
+- Synchronized motion to preset height  
+- Forced desynchronization during movement  
+- Automatic coordinated fault stop  
+
+![Smart Jump Demo](docs/demo.gif)
+
+### Generate the Demo Recording
+
+Record the terminal session:
+
+```bash
+brew install asciinema
+asciinema rec docs/demo.cast
+python3 demo_run.py
+# Press Ctrl+D to stop recording
+```
+
+Convert to GIF:
+
+```bash
+brew install agg
+agg docs/demo.cast docs/demo.gif
+```
+
+Commit the animation:
+
+```bash
+git add docs/demo.cast docs/demo.gif
+git commit -m "docs: add recorded demo animation"
+git push
+```
+
+---
+
 ## The Problem
 
 In show jumping training, height changes occur constantly:
@@ -94,7 +132,7 @@ flowchart TB
     DevB --> MotB[Actuator B]
 ```
 
-Full diagrams available in:
+Detailed state machines:
 
 - docs/09_state_diagrams.md  
 - docs/11_system_architecture.md  
@@ -168,7 +206,7 @@ Designed around practical component tradeoffs:
 | Mechanical | Backlash tolerance |
 | Safety | Hard stops and limit switches |
 
-This is designed for serious private barns, not industrial overengineering.
+Designed for serious private barns and professional facilities.
 
 ---
 
@@ -184,28 +222,17 @@ Current prototype includes:
 - Deterministic state machine validation  
 - CI integrated safety testing  
 
----
-
-## Running the Prototype
-
-Run automated tests:
+Run tests:
 
 ```bash
 python3 -m pytest -q
 ```
 
-Run demonstration scenario:
+Run simulation:
 
 ```bash
 python3 demo_run.py
 ```
-
-The demo validates:
-
-- Synchronized motion  
-- Desync fault detection  
-- Coordinated stop enforcement  
-- Deterministic transitions  
 
 ---
 
@@ -238,4 +265,3 @@ Phase 6 Cost Optimization and Production Modeling
 ---
 
 Smart Jump represents the modernization of equestrian training infrastructure through synchronized, safety controlled automation.
-
