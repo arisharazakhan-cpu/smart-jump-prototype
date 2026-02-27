@@ -1,25 +1,32 @@
-from __future__ import annotations
+"""
+Smart Jump Demo Runner
+
+Simulates a mounted rider adjusting jump height via Bluetooth.
+Demonstrates:
+- synchronized move to preset
+- forced desync detection during movement
+- coordinated fault stop
+"""
 
 from ble.gatt_emulator import GattEmulator
 from app.orchestrator import Orchestrator
 
 
-def main() -> None:
+def main() -> int:
     left = GattEmulator(controller_id="L")
     right = GattEmulator(controller_id="R")
     app = Orchestrator(left, right)
 
     print("Initial height L:", left.position_in)
     print("Initial height R:", right.position_in)
-    print()
-    print("Rider sets preset to 36 inches")
 
+    print("\nRider sets preset to 36 inches")
     app.set_preset(36)
 
     for step in range(300):
         app.heartbeat()
         app.tick(50)
-        if step % 10 == 0 and app.state == "app_moving":
+        if step % 10 == 0:
             print("t", step, "state", app.state, "L", left.position_in, "R", right.position_in)
         if app.state == "app_idle":
             break
@@ -27,9 +34,8 @@ def main() -> None:
     print("Final height L:", left.position_in)
     print("Final height R:", right.position_in)
     print("App state:", app.state)
-    print()
 
-    print("Simulating desync fault during move to 60 inches")
+    print("\nSimulating desync fault during move to 60 inches")
     app.set_preset(60)
 
     forced = False
@@ -37,7 +43,7 @@ def main() -> None:
         app.heartbeat()
         app.tick(50)
 
-        if not forced and app.state == "app_moving" and left.position_in < 40:
+        if (not forced) and app.state == "app_moving" and left.position_in < 40:
             left.position_in += 5
             forced = True
             print("forced desync at t", step, "L", left.position_in, "R", right.position_in)
@@ -51,8 +57,13 @@ def main() -> None:
     print("App state after desync:", app.state)
     print("Final height L:", left.position_in)
     print("Final height R:", right.position_in)
-    print("Events:", app.events)
+
+    if app.events:
+        print("Fault detected:", app.events[-1]["reason"])
+        print("System halted safely.")
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
