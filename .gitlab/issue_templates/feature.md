@@ -1,22 +1,33 @@
-## Feature summary
-Describe the feature in 1-3 sentences.
+# Feature Request
 
-## User story
-As a rider/user, I want ___ so that ___.
+## Goal
+What capability are we adding and why?
 
-## Requirements
-- [ ] REQ:
-- [ ] REQ:
+## User Story
+As a rider, I want to ___ so that ___
 
-## UX / behavior
-What the user sees and does.
+## Scope
+In scope:
+- 
+Out of scope:
+- 
 
-## Acceptance criteria
-- [ ] Works on:
-- [ ] Presets included:
-- [ ] Stop behavior:
-- [ ] Error states:
+## System Design Notes
+Which layer changes?
+- mobile app logic
+- ble contract
+- controller state machine
+- tests
 
-## Demo evidence required
-- [ ] Screen recording
-- [ ] Photo/video of hardware behavior
+## Acceptance Criteria
+- [ ] measurable behavior that proves it works
+- [ ] tests added or updated
+- [ ] docs updated if needed
+
+## Risks
+- safety risk:
+- complexity risk:
+- schedule risk:
+
+## References
+Link to related docs or issues:

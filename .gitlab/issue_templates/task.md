@@ -1,23 +1,20 @@
-## Goal
-What are we trying to accomplish?
+# Task
 
-## Scope
-- [ ] Included:
-- [ ] Not included:
+## What
+Describe the task in 1 to 2 sentences.
 
-## Acceptance criteria
-- [ ] AC1:
-- [ ] AC2:
-- [ ] AC3:
+## Why
+Why is this task needed?
 
 ## Steps
-1.
-2.
-3.
+- [ ] 
+- [ ] 
+- [ ] 
 
-## Test evidence required
-- [ ] Photo/video
-- [ ] Logs
-- [ ] Notes/results
+## Definition of Done
+- [ ] code merged
+- [ ] tests passing
+- [ ] docs updated if relevant
 
-## Risks / safety notes
+## Links
+Related issues, docs, or commits:

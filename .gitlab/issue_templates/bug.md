@@ -1,26 +1,45 @@
-## Bug summary
-What is broken?
+# Bug Report
 
-## Expected behavior
+## Summary
+One sentence: what is broken?
+
+## Affected Component
+Select one:
+- ble gatt emulator
+- app orchestrator
+- simulation
+- docs
+- ci pipeline
+
+## Expected Behavior
 What should happen?
 
-## Actual behavior
+## Actual Behavior
 What happens instead?
 
-## Repro steps
+## Repro Steps
 1.
 2.
 3.
 
+## Evidence
+Paste output or attach screenshot:
+- command run:
+- output:
+- pipeline link:
+
+## Safety Impact
+Does this create unsafe behavior in the model?
+Examples:
+- fails to stop on heartbeat loss
+- misses desync detection
+- allows motion in wrong state
+
 ## Environment
-- OS:
-- Firmware version:
-- App version:
+- os:
+- python version:
+- branch:
+- commit sha:
 
-## Logs / evidence
-Paste logs or attach screenshots/videos.
-
-## Severity
-- [ ] low
-- [ ] medium
-- [ ] high
+## Notes
+Anything else that might matter
