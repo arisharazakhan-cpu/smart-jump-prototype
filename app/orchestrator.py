@@ -8,12 +8,13 @@ Enforces synchronization, heartbeat, and fail safe logic.
 from typing import Dict, Any, Optional
 from ble.gatt_emulator import GattEmulator
 
-DESYNC_TOLERANCE_IN = 1
 
 class Orchestrator:
-    def __init__(self, left: GattEmulator, right: GattEmulator):
+    def __init__(self, left: GattEmulator, right: GattEmulator, desync_tolerance_in: int = 1):
         self.left = left
         self.right = right
+        self.desync_tolerance_in = desync_tolerance_in
+
         self.state = "app_idle"
         self.events = []
 
@@ -72,7 +73,7 @@ class Orchestrator:
         if self.left_last is None or self.right_last is None:
             return
         diff = abs(self.left.position_in - self.right.position_in)
-        if diff > DESYNC_TOLERANCE_IN:
+        if diff > self.desync_tolerance_in:
             self._enter_fault("desync_detected")
 
     def _enter_fault(self, reason: str) -> None:
