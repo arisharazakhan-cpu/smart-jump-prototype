@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smartjump"
+version = "0.1.0"
+description = "Mounted Bluetooth-controlled jump standards, deterministic simulation prototype"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+smartjump = "smartjump.cli:main"
+
+[tool.setuptools]
+packages = ["smartjump"]
