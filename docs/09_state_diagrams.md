@@ -2,8 +2,8 @@
 
 This document defines the formal state machines for:
 
-1. Standard Controller (device firmware)
-2. Mobile App Orchestrator (control authority)
+1. Standard Controller (device firmware)  
+2. Mobile App Orchestrator (control authority)  
 
 ---
 
@@ -30,3 +30,38 @@ stateDiagram-v2
     moving --> idle_ready : stop
     idle_ready --> idle_ready : stop
     fault --> fault : stop
+```
+
+Device guarantees:
+- stop always accepted  
+- watchdog triggers fault while moving  
+- fault is latched until reset  
+- no motion allowed unless in idle_ready  
+
+---
+
+## 2. App Orchestrator State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> app_idle
+
+    app_idle --> app_moving : set_preset
+    app_moving --> app_idle : both_idle_ready
+
+    app_moving --> app_fault : desync_detected
+    app_moving --> app_fault : telemetry_timeout
+    app_moving --> app_fault : device_fault
+    app_moving --> app_fault : unexpected_ack
+
+    app_fault --> app_idle : reset_sequence
+
+    app_moving --> app_idle : user_stop
+```
+
+App guarantees:
+- monitors both standards continuously  
+- enforces desync tolerance  
+- enforces telemetry timeout  
+- issues stop to both on any anomaly  
+- requires explicit reset after fault  
