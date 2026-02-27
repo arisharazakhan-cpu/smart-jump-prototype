@@ -26,7 +26,7 @@ The animation below shows:
 - Forced desynchronization during movement  
 - Automatic coordinated fault stop  
 
-![Smart Jump Demo](docs/demo_v2.gif)
+![Smart Jump Demo](docs/demo.gif?raw=1&v=5792e2d)
 
 ---
 
