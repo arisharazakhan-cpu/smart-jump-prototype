@@ -1,39 +1,42 @@
 # Bug Report
 
 ## Summary
-One sentence: what is broken?
+Concise description of the defect.
 
-## Affected Component
-Select one:
+## Component
 - ble gatt emulator
 - app orchestrator
 - simulation
-- docs
+- documentation
 - ci pipeline
 
+## Observed Behavior
+Describe what is currently happening.
+
 ## Expected Behavior
-What should happen?
+Describe what should happen instead.
 
-## Actual Behavior
-What happens instead?
-
-## Repro Steps
+## Reproduction
+Steps to reliably reproduce:
 1.
 2.
 3.
 
 ## Evidence
-Paste output or attach screenshot:
-- command run:
+- command:
 - output:
+- logs:
 - pipeline link:
 
 ## Safety Impact
-Does this create unsafe behavior in the model?
-Examples:
-- fails to stop on heartbeat loss
-- misses desync detection
-- allows motion in wrong state
+Does this defect compromise:
+- heartbeat enforcement
+- desync detection
+- motion gating
+- fault latching
+- stop behavior
+
+Explain risk level if applicable.
 
 ## Environment
 - os:
@@ -41,5 +44,5 @@ Examples:
 - branch:
 - commit sha:
 
-## Notes
-Anything else that might matter
+## Additional Context
+Optional notes, edge cases, or related issues.
