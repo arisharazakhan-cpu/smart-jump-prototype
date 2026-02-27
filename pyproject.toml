@@ -15,5 +15,7 @@ dev = ["pytest>=7.0"]
 [project.scripts]
 smartjump = "smartjump.cli:main"
 
+
+
 [tool.setuptools]
-packages = ["smartjump"]
+packages = ["smartjump", "ble", "app", "simulation"]
