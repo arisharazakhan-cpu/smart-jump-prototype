@@ -4,122 +4,94 @@
 ![CI](https://img.shields.io/badge/ci-passing-brightgreen)
 ![Language](https://img.shields.io/badge/python-3.10+-blue)
 ![Architecture](https://img.shields.io/badge/architecture-layered-informational)
-![Safety](https://img.shields.io/badge/safety-deterministic-critical)
+![Safety Model](https://img.shields.io/badge/safety-deterministic-critical)
 
-Mounted Bluetooth Control System for Automated Jump Standards
+Mounted Bluetooth Control System for Automated Jump Standards  
 
-A safety-first, synchronization-aware prototype modeling an automated jump system that allows riders to adjust jump height without dismounting.
+A synchronization-aware, safety-first system architecture designed to eliminate manual jump height adjustment during mounted training.
 
 ---
 
-## The Problem
+## Executive Overview
 
-In show jumping and training environments, riders frequently adjust jump height between warmup sets and working sets.
+Show jumping training requires frequent height adjustments:
 
-Typical workflow today:
+Warmup height → working height → adjusted combinations → repetition.
 
-- Warm up at 2'0"
-- Dismount
-- Manually lift heavy poles
-- Reposition cups
-- Remount
-- Continue training
+Today, this process requires:
 
-This creates several real-world inefficiencies:
+- Dismounting
+- Physically lifting poles
+- Manually repositioning cups
+- Remounting
+- Interrupting rhythm and training flow
 
-- Time loss between sets
-- Physical strain from repeatedly lifting poles
-- Safety risk when adjusting alone
-- Training interruption and loss of rhythm
-- Reduced productivity during limited arena time
-
-Common scenarios:
+This creates operational inefficiencies, physical strain, and safety concerns — particularly for:
 
 - Riders training alone
-- Junior riders without ground assistance
+- Junior riders without ground support
 - Trainers managing multiple students
-- Trainers recovering from injury
-- High-volume training barns where time efficiency matters
+- Trainers with physical limitations
+- High-volume performance barns
 
-Height adjustment is manual, heavy, repetitive, and operationally inefficient.
-
----
-
-## Proposed Solution
-
-Smart Jump enables mounted height adjustment via Bluetooth control.
-
-The rider selects a preset height from a mobile interface while mounted. Both jump standards move in synchronized fashion to the new height under strict safety constraints.
-
-The system enforces:
-
-- Coordinated motion
-- Desynchronization detection
-- Heartbeat supervision
-- Coordinated stop on anomaly
-- Fault latching until explicit reset
-
-This transforms jump adjustment from a manual labor task into a controlled system operation.
+Smart Jump transforms height adjustment from manual labor into a controlled, synchronized system operation.
 
 ---
 
-## Business Value
+## Market Context
 
-### 1. Time Efficiency
+### Target Users
 
-Reducing repeated dismount and adjustment cycles increases productive training time.
+- Private riders training independently  
+- Performance barns with high lesson turnover  
+- Competitive riders optimizing arena time  
+- Trainers managing multiple athletes  
+- Facilities investing in modernization  
 
-In high-volume barns, this compounds across:
+### Operational Value
 
-- Multiple riders
-- Multiple lessons
-- Daily repetition
+**Time Efficiency**  
+Eliminates repeated mount/dismount cycles and increases productive arena time.
 
-### 2. Reduced Physical Strain
+**Reduced Physical Strain**  
+Removes repetitive lifting of heavy poles and standards.
 
-Manual pole adjustment is repetitive and physically demanding. Automation reduces strain and injury risk.
+**Solo Training Enablement**  
+Allows mounted height changes without ground assistance.
 
-### 3. Solo Training Enablement
+**Facility Differentiation**  
+Positions barns as technology-forward and efficiency-focused.
 
-Riders training alone can safely adjust height without assistance.
-
-### 4. Operational Differentiation
-
-Training facilities offering automated jump infrastructure differentiate themselves through:
-
-- Efficiency
-- Modernization
-- Safety-conscious design
-
-### 5. Accessibility for Injured Trainers
-
-Instructors recovering from injuries can continue coaching without lifting poles.
+**Injury Accessibility**  
+Supports continued training when lifting is limited or restricted.
 
 ---
 
-## System Overview
+## System Concept
 
-The system models two independent jump standards, each running a local safety controller.
+The system consists of two independent jump standards, each running a local safety controller.
 
-A mounted mobile application orchestrates both standards and enforces synchronization and fault management.
+A mounted mobile application connects to both standards via Bluetooth Low Energy and orchestrates synchronized motion.
 
 Each standard enforces:
 
-- Motion state machine
+- Deterministic motion state machine
 - Height tracking
 - Heartbeat timeout enforcement
 - Fault latching
 - Stop gating
+- Limit protection
 
 The app enforces:
 
-- Synchronized preset commands
-- Continuous heartbeat transmission
-- Telemetry monitoring
+- Coordinated preset commands
+- Continuous heartbeat supervision
+- Telemetry validation
 - Desynchronization detection
-- Coordinated stop behavior
+- Coordinated stop on anomaly
+- Explicit reset after fault
 
-The firmware layer is currently implemented as a deterministic emulator to validate safety logic prior to hardware integration.
+The current repository implements deterministic firmware emulation and orchestrator logic to validate safety behavior prior to hardware deployment.
 
 ---
 
@@ -129,129 +101,149 @@ The firmware layer is currently implemented as a deterministic emulator to valid
 
 ```mermaid
 flowchart TB
-    Rider[Rider intent<br/>preset or stop] --> App[Mobile App Orchestrator]
+    Rider[Rider Intent] --> App[Mobile App Orchestrator]
 
-    App -->|BLE write| CmdA[Command RX<br/>Standard A]
-    App -->|BLE write| HbA[Heartbeat RX<br/>Standard A]
-    TelA[Telemetry TX<br/>Standard A] -->|BLE notify| App
+    App -->|BLE Write| CmdA[Command RX - Standard A]
+    App -->|BLE Write| HbA[Heartbeat RX - Standard A]
+    TelA[Telemetry TX - Standard A] -->|BLE Notify| App
 
-    App -->|BLE write| CmdB[Command RX<br/>Standard B]
-    App -->|BLE write| HbB[Heartbeat RX<br/>Standard B]
-    TelB[Telemetry TX<br/>Standard B] -->|BLE notify| App
+    App -->|BLE Write| CmdB[Command RX - Standard B]
+    App -->|BLE Write| HbB[Heartbeat RX - Standard B]
+    TelB[Telemetry TX - Standard B] -->|BLE Notify| App
 
-    CmdA --> DevA[Controller A<br/>State Machine]
+    CmdA --> DevA[Controller A State Machine]
     HbA --> DevA
-    DevA --> MotA[Actuator A<br/>Motor + Sensor]
+    DevA --> MotA[Actuator A]
 
-    CmdB --> DevB[Controller B<br/>State Machine]
+    CmdB --> DevB[Controller B State Machine]
     HbB --> DevB
-    DevB --> MotB[Actuator B<br/>Motor + Sensor]
+    DevB --> MotB[Actuator B]
 ```
 
 ---
 
 ## Safety Architecture
 
-Safety is enforced at two independent layers.
+Safety enforcement exists at two independent layers.
 
-### Controller-Level Safety
+### Controller Layer
 
-- Motion allowed only in idle_ready
-- Heartbeat timeout triggers fault state
-- Faults are latched until explicit reset
-- Stop accepted at any time
-- Limit or overload triggers immediate fault
+- Motion allowed only in idle_ready  
+- Heartbeat timeout triggers fault  
+- Stop accepted in all states  
+- Faults latched until reset  
+- Limit or overload causes immediate halt  
 
-### App-Level Safety
+### Orchestrator Layer
 
-- Continuous telemetry monitoring
-- Configurable desynchronization tolerance
-- Coordinated stop on anomaly
-- Device fault propagation
-- Explicit reset required after fault
+- Continuous telemetry monitoring  
+- Configurable desynchronization tolerance  
+- Coordinated stop across both standards  
+- Device fault propagation  
+- Explicit reset required before reactivation  
 
-All safety behavior is validated via deterministic simulation tests.
+All behaviors are validated through deterministic simulation tests.
 
 ---
 
 ## Repository Structure
 
 app/  
-Application orchestrator and synchronization logic  
+Application-level orchestration and safety supervision  
 
 ble/  
-GATT emulator modeling firmware BLE contract  
+Bluetooth GATT emulator modeling firmware contract  
 
 tests/  
-Deterministic unit tests validating safety behavior  
+Deterministic unit tests validating safety invariants  
 
 docs/  
-Architecture and state diagrams  
+Architecture diagrams and system documentation  
 
 firmware/  
-Planned embedded implementation layer  
+Planned embedded firmware implementation  
 
 hardware/  
-Mechanical and electrical planning documentation  
+Mechanical and electrical planning  
 
 mobile_app/  
 Future mounted UI layer  
 
 test_artifacts/  
-Reserved for validation traces  
+Reserved validation outputs  
 
 ---
 
-## Running the Prototype
+## Validation
 
-Run tests:
+Run automated tests:
 
 python3 -m pytest -q
 
-Run demonstration scenario:
+Run simulation demo:
 
 python3 demo_run.py
 
-The demo simulates:
+The demo validates:
 
-- Normal synchronized motion
-- Desync fault during active movement
-- Coordinated stop enforcement
+- Synchronized motion behavior  
+- Desync fault detection  
+- Coordinated stop enforcement  
+- Deterministic state transitions  
 
 ---
 
-## Development Workflow
+## Development Discipline
 
-This repository follows structured engineering discipline:
+This project follows structured engineering workflow:
 
-Issue → Feature Branch → Merge Request → CI → Merge → Issue Close
+Issue → Feature Branch → Merge Request → CI → Merge → Issue Close  
 
 Enforced by:
 
-- Structured issue templates
-- Structured merge request template
-- No direct commits to main
-- CI validation before merge
+- Structured issue templates  
+- Structured merge request template  
+- No direct commits to main  
+- CI validation before merge  
+
+---
+
+## Financial Target
+
+Designed for feasibility within a $2000–$4000 hardware build range.
+
+Future cost modeling will include:
+
+- Actuator selection  
+- Encoder precision tradeoffs  
+- Mechanical load modeling  
+- Battery and power design  
+- Environmental durability constraints  
+
+---
+
+## Roadmap
+
+Phase 1 — Deterministic Control Modeling (Complete)  
+Phase 2 — Firmware Integration (ESP32-based controllers)  
+Phase 3 — Actuator + Encoder Hardware Integration  
+Phase 4 — Mechanical Validation & Load Testing  
+Phase 5 — Mounted Field Testing  
+Phase 6 — Cost Optimization & Production Modeling  
 
 ---
 
 ## Current Status
 
-Prototype complete for:
+Completed:
 
-- BLE contract modeling
-- Dual-controller synchronization logic
-- Heartbeat enforcement
-- Desync detection with configurable tolerance
-- Deterministic state machine design
-- CI integration
-- Structured workflow enforcement
+- BLE contract modeling  
+- Dual-controller synchronization logic  
+- Heartbeat enforcement  
+- Desync detection with configurable tolerance  
+- Deterministic state machine design  
+- CI integration  
+- Structured workflow enforcement  
 
-Next milestone:
-
-- Replace emulator with ESP32 firmware
-- Integrate encoder + actuator hardware
-- Validate mechanical backlash tolerance
-- Field-test mounted control flow
-- Conduct cost analysis for $2000–$4000 hardware build target
+This repository represents a safety-first control prototype positioned for hardware transition.
 
