@@ -1,19 +1,11 @@
+image: python:3.11
+
 stages:
   - test
-
-default:
-  image: python:3.11
-
-variables:
-  PYTHONUNBUFFERED: "1"
-
-before_script:
-  - python --version
 
 simulation_tests:
   stage: test
   script:
     - python -m simulation.test_sync_simulator
-  only:
-    - main
-    - merge_requests
+  rules:
+    - if: $CI_COMMIT_BRANCH
