@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import time
 from typing import Tuple
 
 from simulation.sync_simulator import StandardSim, AppOrchestratorSim, StdState
@@ -29,9 +28,9 @@ def run_scenario(
         right.drop_telemetry = True
 
     tick_ms = 50
-    start = time.time()
+    max_ticks = 400  # 20 seconds of simulated time
 
-    while time.time() - start < 8:
+    for _ in range(max_ticks):
         if not inject_comm_timeout:
             app.keepalive()
 
@@ -52,8 +51,6 @@ def run_scenario(
 
         if tL.state == StdState.idle_ready and tR.state == StdState.idle_ready:
             return not (inject_desync or inject_drop_telemetry or inject_comm_timeout)
-
-        time.sleep(tick_ms / 1000.0)
 
     return False
 
