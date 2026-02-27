@@ -8,75 +8,103 @@
 
 ---
 
-# Mounted Bluetooth-Controlled Jump Standards
+# Automated Jump Infrastructure for Mounted Training
 
-A safety-first, synchronized control system designed to eliminate manual jump height adjustment during mounted training.
+A synchronization-aware, safety-first control system that converts manual jump height adjustment into deterministic, supervised motion.
+
+This project models the control architecture behind a mounted Bluetooth-operated jump standard system designed for performance riders and professional training facilities.
 
 ---
 
-## The Reality of Training
+## The Core Thesis
 
-In modern show jumping, riders constantly adjust height between:
+Jump training should be limited by skill — not by logistics.
 
-Warmup → Progressive Sets → Competition Height → Technical Exercises
+In modern show jumping environments, height adjustments occur repeatedly within a single session:
 
-Today this requires:
+Warmup → Progression → Technical combinations → Competition height → Reset
 
-Dismount → Lift poles → Reposition cups → Remount → Resume
+Each transition today requires:
 
-This cycle repeats throughout a session.
+Dismount → Lift poles → Adjust cups → Remount → Resume
 
-It interrupts rhythm.  
-It consumes time.  
-It creates physical strain.  
+That friction compounds.
+
+It costs time.  
+It breaks rhythm.  
+It adds physical strain.  
 It limits solo training.  
 
-For high-performance riders and training barns, that friction compounds daily.
+Smart Jump reframes height adjustment as infrastructure — not labor.
 
 ---
 
-## The Shift
+## Why Now
 
-Smart Jump converts height adjustment from manual labor into a controlled system action.
+Training environments are modernizing.
 
-The rider selects a preset height from a mounted interface.  
-Both standards move simultaneously.  
-The system supervises every millisecond of motion.  
-If anything deviates, motion stops instantly.
+- Riders train independently more often.
+- Barns optimize lesson throughput.
+- Technology adoption in sport is accelerating.
+- Wearables, performance analytics, and smart equipment are increasing.
 
-The goal is not convenience alone.  
-The goal is controlled infrastructure.
+Yet jump adjustment remains entirely manual.
 
----
-
-## Where It Delivers Value
-
-### Operational Impact
-
-• Eliminates repeated mount/dismount cycles  
-• Preserves training rhythm  
-• Reduces physical lifting strain  
-• Enables independent practice  
-• Increases productive arena time  
-
-### Facility-Level Advantage
-
-• Technology-forward differentiation  
-• Reduced instructor fatigue  
-• Higher throughput per lesson block  
-• Improved safety posture  
+The opportunity is not novelty.  
+The opportunity is operational efficiency inside an unchanged workflow.
 
 ---
 
-## System Architecture
+## System Concept
 
-The system consists of two independent standards and one supervisory orchestrator.
+The system consists of:
+
+Two independent jump standards  
+One supervisory mobile orchestrator  
+Bluetooth Low Energy communication  
+Dual-layer safety enforcement  
 
 Each standard is a self-contained safety device.
 
-The mobile application acts as a synchronization authority.
+The mounted application acts as synchronization authority.
 
-### End-to-End Control Flow
+Motion is supervised at every layer.
+
+---
+
+## Operational Impact
+
+### Time & Rhythm
+
+- Eliminates repeated mount/dismount cycles  
+- Preserves training momentum  
+- Increases productive arena minutes  
+
+### Physical Strain Reduction
+
+- Removes repetitive pole lifting  
+- Reduces instructor fatigue  
+- Supports injured trainers  
+
+### Solo Training Enablement
+
+- Safe mounted height adjustment  
+- No ground crew required  
+- Increased autonomy  
+
+### Facility Differentiation
+
+- Technology-forward positioning  
+- Premium infrastructure signaling  
+- Competitive branding advantage  
+
+---
+
+## Architecture Overview
+
+The control model is layered and deterministic.
+
+### End-to-End Data Flow
 
 ```mermaid
 flowchart TB
@@ -101,48 +129,49 @@ flowchart TB
 
 ---
 
-## Safety Model
+## Safety Architecture
 
-Safety is enforced at two independent layers.
+Safety enforcement exists at two independent layers.
 
-### Controller Layer
+### Controller Layer (Local Authority)
 
-The standard itself guarantees:
+The standard guarantees:
 
-- Motion only in idle_ready
-- Stop accepted in all states
-- Heartbeat timeout triggers fault
-- Fault latched until explicit reset
-- Limit or overload causes immediate halt
+- Motion only in idle_ready  
+- Stop accepted in all states  
+- Heartbeat timeout → fault  
+- Fault latched until explicit reset  
+- Limit or overload triggers immediate halt  
 
-### Orchestrator Layer
+### Orchestrator Layer (Supervisory Authority)
 
-The mobile app guarantees:
+The app guarantees:
 
-- Continuous telemetry supervision
-- Configurable desynchronization tolerance
-- Coordinated stop across both standards
-- Fault propagation from either side
-- Explicit reset required before reactivation
+- Continuous telemetry monitoring  
+- Configurable desynchronization tolerance  
+- Coordinated stop across both standards  
+- Device fault propagation  
+- Explicit reset before reactivation  
 
-If synchronization diverges beyond tolerance, both standards stop.
+If either standard deviates beyond tolerance, motion halts across the system.
 
-Deterministic simulation validates every safety invariant.
+All invariants are validated through deterministic simulation.
 
 ---
 
 ## Technical Capabilities
 
-Current implementation provides:
+The current prototype implements:
 
-- BLE contract emulation
+- BLE contract modeling
 - Dual-controller synchronization logic
-- Heartbeat enforcement
-- Desync detection with configurable tolerance
-- Deterministic state machine behavior
+- Heartbeat supervision
+- Configurable desync tolerance
+- Deterministic state machines
+- Coordinated fault handling
 - CI-validated safety tests
 
-This repository models system behavior before hardware integration.
+This repository models control logic prior to hardware deployment.
 
 ---
 
@@ -150,60 +179,64 @@ This repository models system behavior before hardware integration.
 
 Target build range: $2000–$4000
 
-The system is designed around realistic component tradeoffs:
+Design philosophy: practical, barn-feasible engineering — not industrial overdesign.
 
-| Component | Design Consideration |
-|-----------|---------------------|
-| Actuators | Load rating vs response speed |
+Key cost-sensitive areas:
+
+| Category | Design Tradeoff |
+|----------|----------------|
+| Actuators | Load capacity vs speed |
 | Encoders | Precision vs cost |
 | Controller | ESP32-class MCU |
-| Power | Battery vs external supply |
+| Power | Battery vs fixed supply |
 | Mechanical | Backlash tolerance |
-| Safety | Limit switches and hard stops |
+| Safety | Limit switches + hard stops |
 
-The objective is feasibility for private barns and performance facilities — not industrial overengineering.
+Objective: achievable upgrade for serious private facilities.
+
+---
+
+## Competitive Positioning
+
+| Traditional Setup | Smart Jump |
+|-------------------|------------|
+| Manual labor | Automated motion |
+| Interruptions between sets | Continuous flow |
+| Requires assistance | Solo-capable |
+| Physically repetitive | Mechanically assisted |
+| Static infrastructure | Intelligent infrastructure |
+
+This is not gadgetry.  
+It is training infrastructure modernization.
 
 ---
 
 ## Development Discipline
 
-Engineering workflow:
+The repository follows structured engineering workflow:
 
 Issue → Branch → Merge Request → CI → Merge → Close
 
-Enforced by:
+Enforced through:
 
-- Structured issue templates
-- Structured merge request template
-- No direct commits to main
-- Deterministic safety testing
+- Structured issue templates  
+- Structured merge request template  
+- No direct commits to main  
+- Deterministic safety validation  
 
-This mirrors real-world safety-critical development practice.
+This mirrors safety-conscious systems development practices.
 
 ---
 
 ## Repository Structure
 
-app/  
-Orchestrator logic  
-
-ble/  
-Firmware BLE emulator  
-
-tests/  
-Safety validation  
-
-docs/  
-Architecture and state diagrams  
-
-firmware/  
-Planned embedded implementation  
-
-hardware/  
-Mechanical and electrical planning  
-
-mobile_app/  
-Future mounted interface  
+app/ — Orchestrator logic  
+ble/ — Firmware BLE emulator  
+tests/ — Safety validation  
+docs/ — Architecture + state diagrams  
+firmware/ — Planned embedded implementation  
+hardware/ — Mechanical planning  
+mobile_app/ — Future mounted UI  
 
 ---
 
@@ -214,23 +247,28 @@ Phase 2 — ESP32 Firmware Integration
 Phase 3 — Actuator + Encoder Hardware Validation  
 Phase 4 — Mechanical Load Testing  
 Phase 5 — Mounted Field Trials  
-Phase 6 — Cost Optimization & Production Planning  
+Phase 6 — Cost Optimization & Production Modeling  
 
 ---
 
-## Running the Prototype
+## Demonstration
 
-Tests:
+Run tests:
 
 python3 -m pytest -q
 
-Demo:
+Run simulation:
 
 python3 demo_run.py
 
-The demo validates synchronized motion, desync faults, and coordinated stop behavior.
+The demo validates:
+
+- Synchronized motion  
+- Desync fault detection  
+- Coordinated stop enforcement  
+- Deterministic state transitions  
 
 ---
 
-Smart Jump represents the transition from manual adjustment to synchronized, safety-controlled training infrastructure.
+Smart Jump represents a transition from manual physical adjustment to synchronized, safety-controlled equestrian infrastructure.
 
