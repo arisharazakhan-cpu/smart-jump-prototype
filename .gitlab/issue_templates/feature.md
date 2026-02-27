@@ -1,33 +1,46 @@
-# Feature Request
+# Feature Proposal
 
-## Goal
-What capability are we adding and why?
+## Objective
+Define the capability being introduced and the system-level purpose.
 
-## User Story
-As a rider, I want to ___ so that ___
+## Motivation
+Why is this needed?
+Describe mechanical, safety, usability, or architectural drivers.
 
-## Scope
-In scope:
-- 
-Out of scope:
-- 
-
-## System Design Notes
-Which layer changes?
-- mobile app logic
-- ble contract
-- controller state machine
+## Impacted Layers
+Indicate which layers are affected:
+- mobile app
+- orchestrator logic
+- BLE contract
+- controller firmware model
+- simulation
 - tests
+- documentation
+
+## Design Overview
+High-level technical description of the proposed change.
+Include constraints or assumptions.
 
 ## Acceptance Criteria
-- [ ] measurable behavior that proves it works
-- [ ] tests added or updated
-- [ ] docs updated if needed
+- Observable behavior defined
+- Tests added or updated
+- Backwards compatibility considered
+- Documentation updated where applicable
+
+## Safety Considerations
+Does this change affect:
+- motion gating
+- heartbeat enforcement
+- desync detection
+- fault latching
+- stop behavior
+
+Document mitigation strategy if applicable.
 
 ## Risks
-- safety risk:
-- complexity risk:
-- schedule risk:
+- Safety risk
+- Technical complexity
+- Regression risk
 
 ## References
-Link to related docs or issues:
+Related issues, merge requests, or design documents.

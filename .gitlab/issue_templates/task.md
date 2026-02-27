@@ -1,20 +1,24 @@
-# Task
+# Implementation Task
 
-## What
-Describe the task in 1 to 2 sentences.
+## Description
+Clear statement of the work being performed.
 
-## Why
-Why is this task needed?
+## Rationale
+Why this task is required in the current milestone.
 
-## Steps
-- [ ] 
-- [ ] 
-- [ ] 
+## Technical Scope
+Specific files, modules, or layers involved.
+
+## Execution Steps
+- 
+- 
+- 
 
 ## Definition of Done
-- [ ] code merged
-- [ ] tests passing
-- [ ] docs updated if relevant
+- Code committed via merge request
+- CI pipeline passing
+- Tests updated if applicable
+- Documentation updated if behavior changed
 
-## Links
-Related issues, docs, or commits:
+## Traceability
+Linked issue or design reference.
