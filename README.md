@@ -10,7 +10,7 @@
 
 ## Intelligent Jump Infrastructure for Mounted Training
 
-**Transforming manual jump adjustment into synchronized, safety supervised motion.**
+Transforming manual jump adjustment into synchronized, safety supervised motion.
 
 Smart Jump is a deterministic control architecture prototype that models Bluetooth operated jump standards for performance riders and professional training environments.
 
@@ -18,13 +18,62 @@ This repository focuses on synchronization guarantees, safety invariants, and la
 
 ---
 
-## Live Demonstration
+## Live Interactive Demo
 
-The animation below shows:
+Open the live Smart Jump interface:
 
-- Synchronized motion to preset height  
-- Forced desynchronization during movement  
-- Automatic coordinated fault stop  
+https://smart-jump-prototype.onrender.com
+
+The hosted demo allows you to:
+- set jump height presets
+- trigger synchronized motion
+- simulate desynchronization faults
+- stop motion immediately
+- reset the system
+
+Note: the free hosting instance may take about 20 seconds to wake up if idle.
+
+---
+
+## Live API Demo
+
+Check system state:
+
+```bash
+curl -s https://smart-jump-prototype.onrender.com/api/state | python3 -m json.tool
+```
+
+Move to a preset height:
+
+```bash
+curl -s -X POST https://smart-jump-prototype.onrender.com/api/preset \
+  -H 'Content-Type: application/json' \
+  -d '{"height_in":60}' | python3 -m json.tool
+```
+
+Force a desynchronization fault:
+
+```bash
+curl -s -X POST https://smart-jump-prototype.onrender.com/api/force_desync | python3 -m json.tool
+```
+
+Stop motion:
+
+```bash
+curl -s -X POST https://smart-jump-prototype.onrender.com/api/stop | python3 -m json.tool
+```
+
+Reset fault:
+
+```bash
+curl -s -X POST https://smart-jump-prototype.onrender.com/api/reset | python3 -m json.tool
+```
+
+---
+
+## Simulation Demonstration
+
+The animation below shows synchronized movement, forced desynchronization, and the automatic coordinated halt.
 
 ![Smart Jump Demo](docs/demo.gif?raw=1)
 
@@ -34,10 +83,10 @@ The animation below shows:
 
 In show jumping training, height changes occur constantly:
 
-Warmup  
-Progressive sets  
-Competition height  
-Technical combinations  
+- Warmup  
+- Progressive sets  
+- Competition height  
+- Technical combinations  
 
 Today this requires:
 
@@ -52,7 +101,7 @@ That interruption compounds across sessions.
 It costs time.  
 It breaks rhythm.  
 It adds physical strain.  
-It limits solo training.  
+It limits solo training.
 
 Riders training alone lose valuable momentum.  
 Trainers with injuries face unnecessary strain.  
@@ -74,10 +123,10 @@ Training should be limited by skill, not by logistics.
 
 The system consists of:
 
-- Two independent jump standards  
-- One supervisory mobile orchestrator  
+- two independent jump standards  
+- one supervisory mobile orchestrator  
 - Bluetooth Low Energy communication  
-- Dual layer safety enforcement  
+- dual layer safety enforcement  
 
 Each standard is a self contained safety device.
 
@@ -123,19 +172,19 @@ Safety enforcement exists at two independent layers.
 
 ### Controller Layer Guarantees
 
-- Motion only in idle_ready  
-- Stop accepted in all states  
-- Heartbeat timeout triggers fault  
-- Fault latched until reset  
-- Limit or overload triggers immediate halt  
+- motion only in idle_ready  
+- stop accepted in all states  
+- heartbeat timeout triggers fault  
+- fault latched until reset  
+- limit or overload triggers immediate halt  
 
 ### Orchestrator Layer Guarantees
 
-- Continuous telemetry monitoring  
-- Configurable desynchronization tolerance  
-- Coordinated stop across both standards  
-- Fault propagation from either device  
-- Explicit reset required before reactivation  
+- continuous telemetry monitoring  
+- configurable desynchronization tolerance  
+- coordinated stop across both standards  
+- fault propagation from either device  
+- explicit reset required before reactivation  
 
 If synchronization diverges beyond tolerance, both standards halt.
 
@@ -147,21 +196,21 @@ All invariants are validated through deterministic simulation tests.
 
 ### Operational Efficiency
 
-- Eliminates repeated mount and dismount cycles  
-- Preserves training rhythm  
-- Increases productive arena time  
+- eliminates repeated mount and dismount cycles  
+- preserves training rhythm  
+- increases productive arena time  
 
 ### Physical Strain Reduction
 
-- Removes repetitive lifting  
-- Reduces instructor fatigue  
-- Supports injured trainers  
+- removes repetitive lifting  
+- reduces instructor fatigue  
+- supports injured trainers  
 
 ### Facility Differentiation
 
-- Technology forward positioning  
-- Modernized training infrastructure  
-- Premium branding signal  
+- technology forward positioning  
+- modernized training infrastructure  
+- premium branding signal  
 
 ---
 
@@ -189,19 +238,20 @@ Designed for serious private barns and professional facilities.
 Current prototype includes:
 
 - BLE contract modeling  
-- Dual controller synchronization logic  
-- Heartbeat supervision  
-- Configurable desync tolerance  
-- Coordinated stop behavior  
-- Deterministic state machine validation  
+- dual controller synchronization logic  
+- heartbeat supervision  
+- configurable desync tolerance  
+- coordinated stop behavior  
+- deterministic state machine validation  
 - CI integrated safety testing  
-- Installable CLI entry point  
+- installable CLI entry point  
+- interactive web control interface  
 
 ---
 
-## Running the Prototype
+## Running the Prototype Locally
 
-Install in editable mode:
+Install:
 
 ```bash
 python3 -m pip install -e ".[dev]"
@@ -213,19 +263,45 @@ Run automated tests:
 smartjump test
 ```
 
-Run the interactive simulation:
+Run the terminal simulation:
 
 ```bash
 smartjump demo
 ```
 
-The demo validates:
+Run the interactive UI locally:
 
-- Synchronized motion to preset  
-- Continuous heartbeat supervision  
-- Forced desynchronization detection  
-- Coordinated fault stop  
-- Deterministic state transitions  
+```bash
+python3 -m smartjump.ui
+```
+
+Then open:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## Repository Structure
+
+smartjump/  
+CLI entrypoints and UI server  
+
+app/  
+orchestrator logic  
+
+ble/  
+BLE protocol modeling  
+
+simulation/  
+deterministic runtime simulation  
+
+docs/  
+architecture diagrams and design notes  
+
+tests/  
+safety and synchronization validation  
 
 ---
 
@@ -237,12 +313,12 @@ Issue → Branch → Merge Request → CI → Merge → Close
 
 Enforced through:
 
-- Structured issue templates  
-- Structured merge request template  
-- No direct commits to main  
-- Deterministic safety validation  
+- structured issue templates  
+- structured merge request template  
+- protected main branch  
+- deterministic safety validation  
 
-This mirrors real world safety conscious development practice.
+This mirrors real world safety conscious development practices.
 
 ---
 
