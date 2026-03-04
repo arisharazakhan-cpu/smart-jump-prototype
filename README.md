@@ -210,6 +210,38 @@ All invariants are validated through deterministic simulation tests.
 
 ---
 
+## Engineering Design Decisions
+
+This prototype emphasizes deterministic behavior, clear safety boundaries, and simplicity of synchronization logic. Several architectural decisions were made deliberately to support these goals.
+
+### Supervisory Orchestrator
+
+Synchronization is handled by a single supervisory orchestrator rather than peer-to-peer coordination between jump standards.  
+This prevents distributed consensus complexity and ensures a single source of truth for motion commands and safety supervision.
+
+### Desynchronization Tolerance
+
+The system allows a configurable tolerance between the positions of both standards.  
+Mechanical systems rarely move in perfect lockstep due to actuator lag, encoder noise, and mechanical variance.  
+If the difference exceeds the allowed tolerance, the orchestrator triggers a coordinated fault stop.
+
+### Fault Latching
+
+Fault states are latched until an explicit reset command is issued.  
+This prevents automatic system recovery after transient faults and mirrors safety practices used in industrial motion control systems.
+
+### Heartbeat Supervision
+
+The orchestrator continuously transmits heartbeat messages to both controllers.  
+If a heartbeat is missed beyond the allowed interval, the system transitions to a fault state and halts motion.
+
+### Deterministic Simulation
+
+The repository includes a deterministic simulation environment that validates synchronization behavior and fault handling before any physical hardware integration.  
+This allows safety invariants to be tested and verified independently from mechanical implementation.
+
+---
+
 ## Business Impact
 
 ### Operational Efficiency
