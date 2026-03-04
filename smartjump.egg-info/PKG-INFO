@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: smartjump
+Version: 0.1.0
+Summary: Mounted Bluetooth-controlled jump standards, deterministic simulation prototype
+Requires-Python: >=3.10
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"

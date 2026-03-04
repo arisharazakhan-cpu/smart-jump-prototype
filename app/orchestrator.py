@@ -70,8 +70,6 @@ class Orchestrator:
     def _check_desync(self) -> None:
         if self.state != "app_moving":
             return
-        if self.left_last is None or self.right_last is None:
-            return
         diff = abs(self.left.position_in - self.right.position_in)
         if diff > self.desync_tolerance_in:
             self._enter_fault("desync_detected")

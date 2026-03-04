@@ -18,6 +18,33 @@
 
 ---
 
+## System Overview
+
+<p align="center">
+<b>Smart Jump Control Architecture</b>
+</p>
+
+```mermaid
+flowchart LR
+    Rider[Rider] --> App[Mobile App]
+
+    App --> BLEA[BLE Channel A]
+    App --> BLEB[BLE Channel B]
+
+    BLEA --> DevA[Jump Standard A]
+    BLEB --> DevB[Jump Standard B]
+
+    DevA --> MotorA[Actuator A]
+    DevB --> MotorB[Actuator B]
+
+    DevA --> TelemetryA[Telemetry]
+    DevB --> TelemetryB[Telemetry]
+
+    TelemetryA --> App
+    TelemetryB --> App
+
+    ---
+
 ## Intelligent Jump Infrastructure for Mounted Training
 
 Transforming manual jump adjustment into synchronized, safety supervised motion.
