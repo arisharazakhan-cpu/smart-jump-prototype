@@ -8,6 +8,16 @@
 
 ---
 
+<p align="center">
+
+<a href="https://smart-jump-prototype.onrender.com">
+<img src="https://img.shields.io/badge/Launch%20Live%20Demo-Smart%20Jump-blue?style=for-the-badge&logo=google-chrome">
+</a>
+
+</p>
+
+---
+
 ## Intelligent Jump Infrastructure for Mounted Training
 
 Transforming manual jump adjustment into synchronized, safety supervised motion.
