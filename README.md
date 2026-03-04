@@ -85,7 +85,9 @@ curl -s -X POST https://smart-jump-prototype.onrender.com/api/reset | python3 -m
 
 The animation below shows synchronized movement, forced desynchronization, and the automatic coordinated halt.
 
-![Smart Jump Demo](docs/demo.gif?raw=1)
+<p align="center">
+<img src="docs/demo.gif?raw=1" width="700">
+</p>
 
 ---
 
@@ -146,7 +148,7 @@ The mobile application acts as synchronization authority and fault supervisor.
 
 ## System Architecture
 
-### End to End Data Flow
+<p align="center"><b>End to End System Data Flow</b></p>
 
 ```mermaid
 flowchart TB
