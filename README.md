@@ -18,6 +18,12 @@
 
 ---
 
+<p align="center">
+<img src="docs/ui_screenshot.png" width="800">
+</p>
+
+---
+
 ## Intelligent Jump Infrastructure for Mounted Training
 
 Transforming manual jump adjustment into synchronized, safety supervised motion.
@@ -41,7 +47,7 @@ The hosted demo allows you to:
 - stop motion immediately
 - reset the system
 
-Note: the free hosting instance may take about 20 seconds to wake up if idle.
+Note: the hosting instance may take about 20 seconds to wake up if idle.
 
 ---
 
