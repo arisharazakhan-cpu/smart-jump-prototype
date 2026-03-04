@@ -6,6 +6,7 @@ stages:
 simulation_tests:
   stage: test
   script:
+    - pip install -e ".[dev]"
     - python -m simulation.test_sync_simulator
   rules:
     - if: $CI_COMMIT_BRANCH
