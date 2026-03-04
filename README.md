@@ -9,39 +9,10 @@
 ---
 
 <p align="center">
-
 <a href="https://smart-jump-prototype.onrender.com">
 <img src="https://img.shields.io/badge/Launch%20Live%20Demo-Smart%20Jump-blue?style=for-the-badge&logo=google-chrome">
 </a>
-
 </p>
-
----
-
-## System Overview
-
-<p align="center">
-<b>Smart Jump Control Architecture</b>
-</p>
-
-```mermaid
-flowchart LR
-    Rider[Rider] --> App[Mobile App]
-
-    App --> BLEA[BLE Channel A]
-    App --> BLEB[BLE Channel B]
-
-    BLEA --> DevA[Jump Standard A]
-    BLEB --> DevB[Jump Standard B]
-
-    DevA --> MotorA[Actuator A]
-    DevB --> MotorB[Actuator B]
-
-    DevA --> TelemetryA[Telemetry]
-    DevB --> TelemetryB[Telemetry]
-
-    TelemetryA --> App
-    TelemetryB --> App
 
 ---
 
@@ -62,11 +33,12 @@ Open the live Smart Jump interface:
 https://smart-jump-prototype.onrender.com
 
 The hosted demo allows you to:
-- set jump height presets
-- trigger synchronized motion
-- simulate desynchronization faults
-- stop motion immediately
-- reset the system
+
+- set jump height presets  
+- trigger synchronized motion  
+- simulate desynchronization faults  
+- stop motion immediately  
+- reset the system  
 
 Note: the free hosting instance may take about 20 seconds to wake up if idle.
 
@@ -80,41 +52,52 @@ Check system state:
 curl -s https://smart-jump-prototype.onrender.com/api/state | python3 -m json.tool
 ```
 
-Move to a preset height:
+Trigger synchronized motion:
 
 ```bash
 curl -s -X POST https://smart-jump-prototype.onrender.com/api/preset \
   -H 'Content-Type: application/json' \
-  -d '{"height_in":60}' | python3 -m json.tool
+  -d '{"height_in":60}'
 ```
 
-Force a desynchronization fault:
+Simulate a desynchronization fault:
 
 ```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/force_desync | python3 -m json.tool
-```
-
-Stop motion:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/stop | python3 -m json.tool
-```
-
-Reset fault:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/reset | python3 -m json.tool
+curl -s -X POST https://smart-jump-prototype.onrender.com/api/force_desync
 ```
 
 ---
 
-## Simulation Demonstration
-
-The animation below shows synchronized movement, forced desynchronization, and the automatic coordinated halt.
+## System Overview
 
 <p align="center">
-<img src="docs/demo.gif?raw=1" width="700">
+<b>Smart Jump Control Architecture</b>
 </p>
+
+```mermaid
+flowchart LR
+    Rider[Rider] --> App[Mobile App Orchestrator]
+
+    App --> BLEA[BLE Channel A]
+    App --> BLEB[BLE Channel B]
+
+    BLEA --> DevA[Jump Standard A]
+    BLEB --> DevB[Jump Standard B]
+
+    DevA --> MotorA[Actuator A]
+    DevB --> MotorB[Actuator B]
+
+    DevA --> TelemetryA[Telemetry]
+    DevB --> TelemetryB[Telemetry]
+
+    TelemetryA --> App
+    TelemetryB --> App
+```
+
+Detailed design artifacts:
+
+- docs/09_state_diagrams.md  
+- docs/11_system_architecture.md  
 
 ---
 
@@ -122,18 +105,18 @@ The animation below shows synchronized movement, forced desynchronization, and t
 
 In show jumping training, height changes occur constantly:
 
-- Warmup  
-- Progressive sets  
-- Competition height  
-- Technical combinations  
+- warmup  
+- progressive sets  
+- competition height  
+- technical combinations  
 
 Today this requires:
 
-- Dismount  
-- Lift heavy poles  
-- Reposition cups  
-- Remount  
-- Resume  
+- dismount  
+- lift heavy poles  
+- reposition cups  
+- remount  
+- resume  
 
 That interruption compounds across sessions.
 
@@ -152,7 +135,7 @@ Facilities waste time that could be spent improving performance.
 
 Smart Jump reframes height adjustment as infrastructure instead of labor.
 
-Mounted preset selection → Coordinated motion → Supervised stop → Stable safe state.
+Mounted preset selection → coordinated motion → supervised stop → stable safe state.
 
 Training should be limited by skill, not by logistics.
 
@@ -170,38 +153,6 @@ The system consists of:
 Each standard is a self contained safety device.
 
 The mobile application acts as synchronization authority and fault supervisor.
-
----
-
-## System Architecture
-
-<p align="center"><b>End to End System Data Flow</b></p>
-
-```mermaid
-flowchart TB
-    Rider[Rider Intent] --> App[Mobile App Orchestrator]
-
-    App -->|BLE Write| CmdA[Command RX - Standard A]
-    App -->|BLE Write| HbA[Heartbeat RX - Standard A]
-    TelA[Telemetry TX - Standard A] -->|BLE Notify| App
-
-    App -->|BLE Write| CmdB[Command RX - Standard B]
-    App -->|BLE Write| HbB[Heartbeat RX - Standard B]
-    TelB[Telemetry TX - Standard B] -->|BLE Notify| App
-
-    CmdA --> DevA[Controller A State Machine]
-    HbA --> DevA
-    DevA --> MotA[Actuator A]
-
-    CmdB --> DevB[Controller B State Machine]
-    HbB --> DevB
-    DevB --> MotB[Actuator B]
-```
-
-Detailed design artifacts:
-
-- docs/09_state_diagrams.md  
-- docs/11_system_architecture.md  
 
 ---
 
@@ -257,8 +208,6 @@ All invariants are validated through deterministic simulation tests.
 
 Target build range: $2000 to $4000
 
-Designed around practical component tradeoffs:
-
 | Category | Design Focus |
 |----------|--------------|
 | Actuators | Load vs response speed |
@@ -284,13 +233,12 @@ Current prototype includes:
 - deterministic state machine validation  
 - CI integrated safety testing  
 - installable CLI entry point  
-- interactive web control interface  
 
 ---
 
-## Running the Prototype Locally
+## Running the Prototype
 
-Install:
+Install in editable mode:
 
 ```bash
 python3 -m pip install -e ".[dev]"
@@ -302,13 +250,7 @@ Run automated tests:
 smartjump test
 ```
 
-Run the terminal simulation:
-
-```bash
-smartjump demo
-```
-
-Run the interactive UI locally:
+Run the local interactive simulation:
 
 ```bash
 python3 -m smartjump.ui
@@ -316,31 +258,7 @@ python3 -m smartjump.ui
 
 Then open:
 
-```
 http://127.0.0.1:8000
-```
-
----
-
-## Repository Structure
-
-smartjump/  
-CLI entrypoints and UI server  
-
-app/  
-orchestrator logic  
-
-ble/  
-BLE protocol modeling  
-
-simulation/  
-deterministic runtime simulation  
-
-docs/  
-architecture diagrams and design notes  
-
-tests/  
-safety and synchronization validation  
 
 ---
 
@@ -348,27 +266,27 @@ safety and synchronization validation
 
 Structured engineering workflow:
 
-Issue → Branch → Merge Request → CI → Merge → Close  
+Issue → Branch → Merge Request → CI → Merge → Close
 
 Enforced through:
 
 - structured issue templates  
 - structured merge request template  
-- protected main branch  
+- no direct commits to main  
 - deterministic safety validation  
 
-This mirrors real world safety conscious development practices.
+This mirrors real world safety conscious development practice.
 
 ---
 
 ## Roadmap
 
-Phase 1 Deterministic Control Modeling Complete  
-Phase 2 ESP32 Firmware Integration  
-Phase 3 Actuator and Encoder Validation  
-Phase 4 Mechanical Load Testing  
-Phase 5 Mounted Field Trials  
-Phase 6 Cost Optimization and Production Modeling  
+Phase 1 deterministic control modeling complete  
+Phase 2 ESP32 firmware integration  
+Phase 3 actuator and encoder validation  
+Phase 4 mechanical load testing  
+Phase 5 mounted field trials  
+Phase 6 cost optimization and production modeling  
 
 ---
 
