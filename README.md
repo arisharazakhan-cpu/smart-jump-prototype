@@ -1,12 +1,14 @@
 # Smart Jump Prototype
 
+<p align="center">
+
 ![Status](https://img.shields.io/badge/status-prototype-blue)
 ![CI](https://img.shields.io/badge/ci-passing-brightgreen)
 ![Architecture](https://img.shields.io/badge/design-layered-informational)
 ![Safety](https://img.shields.io/badge/safety-deterministic-critical)
-![Target Build](https://img.shields.io/badge/hardware_budget-$2000%E2%80%93$4000-orange)
+![Hardware](https://img.shields.io/badge/hardware_target-$2000--$4000-orange)
 
----
+</p>
 
 <p align="center">
 <a href="https://smart-jump-prototype.onrender.com">
@@ -14,167 +16,166 @@
 </a>
 </p>
 
----
-
-## Intelligent Jump Infrastructure for Mounted Training
-
-Transforming manual jump adjustment into synchronized, safety supervised motion.
-
-Smart Jump is a deterministic control architecture prototype that models Bluetooth operated jump standards for performance riders and professional training environments.
-
-This repository focuses on synchronization guarantees, safety invariants, and layered fault enforcement before any physical hardware deployment.
+<p align="center">
+<img src="docs/demo.gif?raw=1" width="900">
+</p>
 
 ---
 
-## Live Interactive Demo
+# Intelligent Jump Infrastructure for Mounted Training
 
-Open the live Smart Jump interface:
+Smart Jump transforms **manual jump adjustment** into **synchronized, safety supervised motion**.
+
+The system models a Bluetooth controlled jump standard pair that can raise or lower cups while the rider remains mounted.
+
+Instead of interrupting training to move poles manually, a rider selects a preset and the system performs a coordinated, monitored adjustment.
+
+The prototype focuses on:
+
+• synchronization guarantees  
+• deterministic state machines  
+• layered safety enforcement  
+• realistic hardware architecture  
+
+before any physical hardware deployment.
+
+---
+
+# Live Interactive Demo
+
+Open the hosted demo:
 
 https://smart-jump-prototype.onrender.com
 
-The hosted demo allows you to:
+The live interface allows you to:
 
-- set jump height presets  
-- trigger synchronized motion  
-- simulate desynchronization faults  
-- stop motion immediately  
-- reset the system  
+• set jump height presets  
+• trigger synchronized movement  
+• simulate desynchronization faults  
+• stop motion immediately  
+• reset the system after a fault  
 
-Note: the free hosting instance may take about 20 seconds to wake up if idle.
-
----
-
-## Live API Demo
-
-Check system state:
-
-```bash
-curl -s https://smart-jump-prototype.onrender.com/api/state | python3 -m json.tool
-```
-
-Trigger synchronized motion:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/preset \
-  -H 'Content-Type: application/json' \
-  -d '{"height_in":60}'
-```
-
-Simulate a desynchronization fault:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/force_desync
-```
+Note: the free hosting instance may take ~20 seconds to wake up.
 
 ---
 
-## System Overview
+# System Overview
 
-<p align="center">
-<b>Smart Jump Control Architecture</b>
-</p>
+<p align="center"><b>Smart Jump Control Architecture</b></p>
 
 ```mermaid
-flowchart LR
-    Rider[Rider] --> App[Mobile App Orchestrator]
+flowchart TB
 
-    App --> BLEA[BLE Channel A]
-    App --> BLEB[BLE Channel B]
+    Rider[Rider Intent] --> App[Mobile App Orchestrator]
 
-    BLEA --> DevA[Jump Standard A]
-    BLEB --> DevB[Jump Standard B]
+    App -->|BLE Command Write| CmdA[Command RX - Standard A]
+    App -->|BLE Heartbeat Write| HbA[Heartbeat RX - Standard A]
+    TelA[Telemetry TX - Standard A] -->|BLE Notify| App
 
-    DevA --> MotorA[Actuator A]
-    DevB --> MotorB[Actuator B]
+    App -->|BLE Command Write| CmdB[Command RX - Standard B]
+    App -->|BLE Heartbeat Write| HbB[Heartbeat RX - Standard B]
+    TelB[Telemetry TX - Standard B] -->|BLE Notify| App
 
-    DevA --> TelemetryA[Telemetry]
-    DevB --> TelemetryB[Telemetry]
+    CmdA --> DevA[Controller Firmware A]
+    HbA --> DevA
+    DevA --> MotA[Motor + Encoder + Limit Switches A]
 
-    TelemetryA --> App
-    TelemetryB --> App
+    CmdB --> DevB[Controller Firmware B]
+    HbB --> DevB
+    DevB --> MotB[Motor + Encoder + Limit Switches B]
+
 ```
 
-Detailed design artifacts:
+Architecture documentation:
 
-- docs/09_state_diagrams.md  
-- docs/11_system_architecture.md  
-
----
-
-## The Problem
-
-In show jumping training, height changes occur constantly:
-
-- warmup  
-- progressive sets  
-- competition height  
-- technical combinations  
-
-Today this requires:
-
-- dismount  
-- lift heavy poles  
-- reposition cups  
-- remount  
-- resume  
-
-That interruption compounds across sessions.
-
-It costs time.  
-It breaks rhythm.  
-It adds physical strain.  
-It limits solo training.
-
-Riders training alone lose valuable momentum.  
-Trainers with injuries face unnecessary strain.  
-Facilities waste time that could be spent improving performance.
+• docs/09_state_diagrams.md  
+• docs/11_system_architecture.md  
 
 ---
 
-## The Shift
+# The Problem
 
-Smart Jump reframes height adjustment as infrastructure instead of labor.
+In show jumping training, height adjustments happen constantly.
 
-Mounted preset selection → coordinated motion → supervised stop → stable safe state.
+Warmups  
+Progressive training sets  
+Competition height preparation  
+Technical combinations
 
-Training should be limited by skill, not by logistics.
+Today, adjusting jumps requires:
+
+• dismounting  
+• lifting heavy poles  
+• moving cups manually  
+• remounting  
+• resuming training  
+
+That cycle repeats dozens of times in a session.
+
+The consequences:
+
+• lost training rhythm  
+• unnecessary physical strain  
+• slower session pacing  
+• difficulty training alone  
+
+Professional riders, trainers, and barns spend time adjusting equipment instead of improving performance.
 
 ---
 
-## System Concept
+# The Shift
 
-The system consists of:
+Smart Jump reframes height adjustment as **infrastructure instead of labor**.
 
-- two independent jump standards  
-- one supervisory mobile orchestrator  
-- Bluetooth Low Energy communication  
-- dual layer safety enforcement  
+Mounted preset selection  
+→ coordinated motion  
+→ supervised stop  
+→ stable safe state
 
-Each standard is a self contained safety device.
-
-The mobile application acts as synchronization authority and fault supervisor.
+Training should be limited by **skill**, not by **logistics**.
 
 ---
 
-## Safety Model
+# System Concept
 
-Safety enforcement exists at two independent layers.
+The architecture models a complete mounted jump adjustment system.
 
-### Controller Layer Guarantees
+Core components:
 
-- motion only in idle_ready  
-- stop accepted in all states  
-- heartbeat timeout triggers fault  
-- fault latched until reset  
-- limit or overload triggers immediate halt  
+• two independent jump standards  
+• a supervisory mobile orchestrator  
+• Bluetooth Low Energy communication  
+• dual-layer safety enforcement  
 
-### Orchestrator Layer Guarantees
+Each jump standard acts as a **self-contained safety controller**.
 
-- continuous telemetry monitoring  
-- configurable desynchronization tolerance  
-- coordinated stop across both standards  
-- fault propagation from either device  
-- explicit reset required before reactivation  
+The mobile application supervises synchronization and fault conditions.
+
+---
+
+# Safety Model
+
+Safety is enforced at two independent layers.
+
+## Controller Layer Guarantees
+
+Each jump standard enforces:
+
+• motion only when in idle_ready state  
+• stop accepted in all states  
+• heartbeat timeout triggers fault  
+• faults latch until reset  
+• mechanical limits stop motion immediately  
+
+## Orchestrator Layer Guarantees
+
+The mobile application supervises:
+
+• continuous telemetry monitoring  
+• configurable desynchronization tolerance  
+• coordinated stop across both standards  
+• fault propagation from either device  
+• manual reset before reactivation  
 
 If synchronization diverges beyond tolerance, both standards halt.
 
@@ -182,61 +183,65 @@ All invariants are validated through deterministic simulation tests.
 
 ---
 
-## Business Impact
+# Business Impact
 
-### Operational Efficiency
+## Operational Efficiency
 
-- eliminates repeated mount and dismount cycles  
-- preserves training rhythm  
-- increases productive arena time  
+• eliminates repeated mount/dismount cycles  
+• preserves training rhythm  
+• increases productive arena time  
 
-### Physical Strain Reduction
+## Physical Strain Reduction
 
-- removes repetitive lifting  
-- reduces instructor fatigue  
-- supports injured trainers  
+• removes repetitive lifting  
+• reduces instructor fatigue  
+• supports injured trainers  
 
-### Facility Differentiation
+## Facility Differentiation
 
-- technology forward positioning  
-- modernized training infrastructure  
-- premium branding signal  
+• technology-forward training infrastructure  
+• modernized arena equipment  
+• premium branding signal for competitive barns  
 
 ---
 
-## Financial Feasibility
+# Financial Feasibility
 
-Target build range: $2000 to $4000
+Target build range:
+
+$2000 – $4000
+
+Key design tradeoffs:
 
 | Category | Design Focus |
-|----------|--------------|
-| Actuators | Load vs response speed |
-| Encoders | Precision vs cost |
-| MCU | ESP32 class |
-| Power | Battery vs fixed supply |
-| Mechanical | Backlash tolerance |
-| Safety | Hard stops and limit switches |
+|--------|--------|
+| Actuators | load capacity vs speed |
+| Encoders | precision vs cost |
+| MCU | ESP32 class controller |
+| Power | battery vs fixed supply |
+| Mechanical | backlash tolerance |
+| Safety | limit switches + hard stops |
 
-Designed for serious private barns and professional facilities.
-
----
-
-## Technical Capabilities
-
-Current prototype includes:
-
-- BLE contract modeling  
-- dual controller synchronization logic  
-- heartbeat supervision  
-- configurable desync tolerance  
-- coordinated stop behavior  
-- deterministic state machine validation  
-- CI integrated safety testing  
-- installable CLI entry point  
+Designed for **serious private barns and professional facilities**.
 
 ---
 
-## Running the Prototype
+# Technical Capabilities
+
+Current prototype implements:
+
+• BLE contract modeling  
+• dual-controller synchronization logic  
+• heartbeat supervision  
+• configurable desync tolerance  
+• coordinated stop behavior  
+• deterministic state machine validation  
+• CI-integrated safety testing  
+• installable CLI entry point  
+
+---
+
+# Running the Prototype
 
 Install in editable mode:
 
@@ -250,7 +255,13 @@ Run automated tests:
 smartjump test
 ```
 
-Run the local interactive simulation:
+Run the simulation:
+
+```bash
+smartjump demo
+```
+
+Run the web interface locally:
 
 ```bash
 python3 -m smartjump.ui
@@ -262,31 +273,67 @@ http://127.0.0.1:8000
 
 ---
 
-## Development Discipline
+# Live API Demo
 
-Structured engineering workflow:
+Check system state:
 
-Issue → Branch → Merge Request → CI → Merge → Close
+```bash
+curl -s https://smart-jump-prototype.onrender.com/api/state | python3 -m json.tool
+```
 
-Enforced through:
+Send preset height:
 
-- structured issue templates  
-- structured merge request template  
-- no direct commits to main  
-- deterministic safety validation  
+```bash
+curl -X POST https://smart-jump-prototype.onrender.com/api/preset \
+-H "Content-Type: application/json" \
+-d '{"height_in":60}'
+```
 
-This mirrors real world safety conscious development practice.
+Force desynchronization:
+
+```bash
+curl -X POST https://smart-jump-prototype.onrender.com/api/force_desync
+```
+
+Stop motion:
+
+```bash
+curl -X POST https://smart-jump-prototype.onrender.com/api/stop
+```
+
+Reset system:
+
+```bash
+curl -X POST https://smart-jump-prototype.onrender.com/api/reset
+```
 
 ---
 
-## Roadmap
+# Development Discipline
 
-Phase 1 deterministic control modeling complete  
-Phase 2 ESP32 firmware integration  
-Phase 3 actuator and encoder validation  
-Phase 4 mechanical load testing  
-Phase 5 mounted field trials  
-Phase 6 cost optimization and production modeling  
+Engineering workflow:
+
+Issue → Branch → Merge Request → CI → Merge → Close
+
+Practices enforced:
+
+• structured issue templates  
+• merge request templates  
+• no direct commits to main  
+• deterministic safety testing  
+
+This mirrors **real-world safety-conscious engineering practice**.
+
+---
+
+# Roadmap
+
+Phase 1 Deterministic Control Modeling ✔  
+Phase 2 ESP32 Firmware Integration  
+Phase 3 Actuator and Encoder Validation  
+Phase 4 Mechanical Load Testing  
+Phase 5 Mounted Field Trials  
+Phase 6 Cost Optimization and Production Modeling  
 
 ---
 
