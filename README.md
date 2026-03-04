@@ -158,6 +158,8 @@ The mobile application acts as synchronization authority and fault supervisor.
 <img src="docs/hardware_concept.png" width="750">
 </p>
 
+High level hardware architecture illustrating the supervisory mobile orchestrator and two independent jump standards.
+
 <p align="center"><b>End to End System Data Flow</b></p>
 
 ```mermaid
@@ -191,8 +193,10 @@ Detailed design artifacts:
 ## Safety Model
 
 <p align="center">
-<img src="docs/controller_state_machine.png" width="650">
+<img src="docs/controller_state_machine.png" width="750">
 </p>
+
+Controller state machine enforcing deterministic motion control and fault handling.
 
 Safety enforcement exists at two independent layers.
 
