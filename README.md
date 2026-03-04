@@ -154,6 +154,10 @@ The mobile application acts as synchronization authority and fault supervisor.
 
 ## System Architecture
 
+<p align="center">
+<img src="docs/hardware_concept.png" width="750">
+</p>
+
 <p align="center"><b>End to End System Data Flow</b></p>
 
 ```mermaid
@@ -186,6 +190,10 @@ Detailed design artifacts:
 
 ## Safety Model
 
+<p align="center">
+<img src="docs/controller_state_machine.png" width="650">
+</p>
+
 Safety enforcement exists at two independent layers.
 
 ### Controller Layer Guarantees
@@ -207,6 +215,8 @@ Safety enforcement exists at two independent layers.
 If synchronization diverges beyond tolerance, both standards halt.
 
 All invariants are validated through deterministic simulation tests.
+
+Detailed safety invariants are documented in [docs/12_safety_invariants.md](docs/12_safety_invariants.md).
 
 ---
 
