@@ -1,0 +1,24 @@
+flowchart LR
+  Rider[Rider on horse] -->|UI| Phone[Mobile App]
+  Phone -->|BLE| BLEA[BLE Link A]
+  Phone -->|BLE| BLEB[BLE Link B]
+
+  subgraph StdA[Jump Standard A]
+    BLEA --> ESPA[ESP32 Controller]
+    ESPA --> DRVA[Motor Driver]
+    DRVA --> MOTA[Linear Actuator / Winch Motor]
+    ENCA[Encoder] --> ESPA
+    LIMA[Limit Switches] --> ESPA
+    PWRA[Battery or DC Supply] --> DRVA
+    PWRA --> ESPA
+  end
+
+  subgraph StdB[Jump Standard B]
+    BLEB --> ESPB[ESP32 Controller]
+    ESPB --> DRVB[Motor Driver]
+    DRVB --> MOTB[Linear Actuator / Winch Motor]
+    ENCB[Encoder] --> ESPB
+    LIMB[Limit Switches] --> ESPB
+    PWRB[Battery or DC Supply] --> DRVB
+    PWRB --> ESPB
+  end

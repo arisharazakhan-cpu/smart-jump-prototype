@@ -4,3 +4,4 @@ __pycache__/
 # build artifacts
 *.egg-info/
 *.egg-info/
+test-artifacts/

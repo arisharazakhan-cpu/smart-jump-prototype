@@ -1,0 +1,20 @@
+stateDiagram-v2
+  [*] --> idle_ready
+
+  idle_ready --> moving: set_preset(preset_in)
+  moving --> idle_ready: target_reached
+  moving --> idle_ready: stop
+
+  idle_ready --> fault: safety_trigger
+  moving --> fault: heartbeat_timeout
+  moving --> fault: limit_switch
+  moving --> fault: encoder_error
+  idle_ready --> fault: encoder_error
+
+  fault --> fault: any_command_except_reset
+  fault --> idle_ready: reset
+
+  note right of fault
+    Fault is latched.
+    Requires explicit reset.
+  end note
