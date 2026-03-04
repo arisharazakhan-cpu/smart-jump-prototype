@@ -43,7 +43,7 @@ flowchart LR
     TelemetryA --> App
     TelemetryB --> App
 
-    ---
+---
 
 ## Intelligent Jump Infrastructure for Mounted Training
 
