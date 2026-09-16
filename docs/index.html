@@ -7,28 +7,27 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #160b16;
-      --shell: #241323;
-      --panel: #30192e;
-      --panel-2: #43213e;
-      --text: #fff4fb;
-      --muted: #d3afc7;
-      --line: #633153;
-      --pink: #ff76b9;
-      --pink-bright: #ff9dce;
-      --pink-deep: #5b183e;
-      --blue: #b7a6ff;
-      --red: #ff777f;
-      --red-deep: #551f2b;
-      --gold: #ffd079;
-      --sand: #684152;
+      --bg: #0c1118;
+      --shell: #141b24;
+      --panel: #1a232e;
+      --panel-2: #25313e;
+      --text: #f5f7fa;
+      --muted: #9aa8b8;
+      --line: #303d4b;
+      --pink: #ed6aa7;
+      --pink-bright: #ff9ac7;
+      --blue: #8ba8ff;
+      --red: #ff747d;
+      --gold: #f5c66b;
+      --success: #72d6b1;
+      --sand: #70635b;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
       color: var(--text);
-      background: radial-gradient(circle at 20% 0%, #4b183d 0, var(--bg) 38%);
+      background: radial-gradient(circle at 18% 0%, #182636 0, var(--bg) 42%);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     button, input { font: inherit; }
@@ -45,7 +44,7 @@
       gap: 16px;
       padding: 14px 22px;
       border-bottom: 1px solid var(--line);
-      background: rgba(22,11,22,.9);
+      background: rgba(12,17,24,.92);
       backdrop-filter: blur(16px);
     }
     .brand { display: flex; align-items: center; gap: 11px; }
@@ -61,11 +60,11 @@
     }
     .brand strong { display: block; font-size: 15px; }
     .brand span, .muted { color: var(--muted); font-size: 12px; }
-    .system-status { display: flex; align-items: center; gap: 9px; color: var(--pink-bright); font-size: 13px; font-weight: 650; }
+    .system-status { display: flex; align-items: center; gap: 9px; color: var(--success); font-size: 13px; font-weight: 650; }
     .status-dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; box-shadow: 0 0 15px currentColor; }
     .layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, .75fr); min-height: calc(100vh - 65px); }
     .main { padding: 20px; }
-    .sidebar { padding: 20px; border-left: 1px solid var(--line); background: rgba(36,19,35,.78); }
+    .sidebar { padding: 20px; border-left: 1px solid var(--line); background: rgba(15,21,29,.82); }
     .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
     h1, h2, h3, p { margin: 0; }
     h1 { font-size: 20px; }
@@ -75,10 +74,10 @@
       position: relative;
       min-height: 430px;
       overflow: hidden;
-      border: 1px solid var(--line);
+      border: 1px solid #3b4855;
       border-radius: 18px;
-      background: linear-gradient(180deg, #39172f 0 55%, var(--sand) 55% 100%);
-      box-shadow: inset 0 0 80px rgba(0,0,0,.2);
+      background: linear-gradient(180deg, #243342 0 55%, var(--sand) 55% 100%);
+      box-shadow: inset 0 0 80px rgba(0,0,0,.16), 0 16px 40px rgba(0,0,0,.18);
     }
     .arena::before {
       content: "";
@@ -112,12 +111,12 @@
       width: 15px;
       height: 225px;
       border-radius: 8px 8px 3px 3px;
-      background: linear-gradient(90deg, #802750, #e968a8);
+      background: linear-gradient(90deg, #2e3b48, #687887);
       box-shadow: 0 12px 24px rgba(0,0,0,.3);
     }
     .standard.left { left: 0; }
     .standard.right { right: 0; }
-    .standard::after { content: ""; position: absolute; left: -22px; bottom: -4px; width: 59px; height: 9px; border-radius: 6px; background: inherit; }
+    .standard::after { content: ""; position: absolute; left: -22px; bottom: -4px; width: 59px; height: 9px; border-radius: 6px; background: var(--pink); }
     .marks { position: absolute; inset: 20px 3px 18px; background: repeating-linear-gradient(180deg, transparent 0 17px, rgba(255,255,255,.2) 17px 18px); }
     .rail {
       position: absolute;
@@ -128,7 +127,7 @@
       border-radius: 7px;
       transform-origin: center;
       transition: bottom .38s ease, transform .25s ease;
-      background: repeating-linear-gradient(90deg, #fff2f8 0 45px, #ee4f9e 45px 90px);
+      background: repeating-linear-gradient(90deg, #f8fafc 0 45px, var(--pink) 45px 90px);
       box-shadow: 0 7px 18px rgba(0,0,0,.32);
     }
     .rail.middle { opacity: .96; }
@@ -152,7 +151,7 @@
       font-size: 19px;
     }
     .height-label { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--shell); font-size: 12px; }
-    .scene-message { position: absolute; left: 14px; bottom: 13px; display: flex; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid rgba(255,118,185,.42); border-radius: 11px; background: rgba(22,11,22,.86); color: var(--pink-bright); font-size: 12px; backdrop-filter: blur(8px); }
+    .scene-message { position: absolute; left: 14px; bottom: 13px; display: flex; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid rgba(114,214,177,.38); border-radius: 11px; background: rgba(12,17,24,.86); color: var(--success); font-size: 12px; backdrop-filter: blur(8px); }
     .scene-message::before { content: "✓"; font-weight: 800; }
     .fault .system-status, .fault .scene-message { color: var(--red); }
     .fault .scene-message { border-color: rgba(255,124,120,.45); }
@@ -186,7 +185,7 @@
     .presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 10px; }
     .safety-list { display: grid; gap: 8px; margin-top: 11px; }
     .safety-row { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; }
-    .safety-row b { color: var(--pink-bright); font-weight: 650; }
+    .safety-row b { color: var(--success); font-weight: 650; }
     .safety-row b.bad { color: var(--red); }
     .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 12px; }
     .events { margin-top: 6px; }
@@ -459,26 +458,37 @@
       toastTimer = setTimeout(() => toast.className = 'toast', 3200);
     }
 
-    function cupBottom(height) {
+    const FIXED_LOWER_RAIL_BOTTOM = 42;
+    const MIDDLE_RAIL_RATIO = .55;
+
+    function topRailBottom(height) {
       const min = lastState?.min_height_in ?? 12;
       const max = lastState?.max_height_in ?? 72;
       const clamped = Math.max(min, Math.min(max, height));
-      return 106 + ((clamped - min) / (max - min)) * 88;
+      return 94 + ((clamped - min) / (max - min)) * 100;
     }
 
     function renderState(state) {
       lastState = state;
-      const leftBottom = cupBottom(state.left_pos_in);
-      const rightBottom = cupBottom(state.right_pos_in);
-      const centerBottom = (leftBottom + rightBottom) / 2;
-      const rotation = Math.max(-8, Math.min(8, state.difference_in * (state.left_pos_in > state.right_pos_in ? -1 : 1)));
-      const railOffsets = [0, 43, 86];
-      railOffsets.forEach((offset, index) => {
-        leftCups[index].style.bottom = `${leftBottom - offset - 7}px`;
-        rightCups[index].style.bottom = `${rightBottom - offset - 7}px`;
-        rails[index].style.bottom = `${centerBottom - offset}px`;
-        rails[index].style.transform = `rotate(${rotation}deg)`;
-      });
+      const leftTop = topRailBottom(state.left_pos_in);
+      const rightTop = topRailBottom(state.right_pos_in);
+      const centerTop = (leftTop + rightTop) / 2;
+      const middleBottom = FIXED_LOWER_RAIL_BOTTOM + ((centerTop - FIXED_LOWER_RAIL_BOTTOM) * MIDDLE_RAIL_RATIO);
+      const topRotation = Math.max(-8, Math.min(8, state.difference_in * (state.left_pos_in > state.right_pos_in ? -1 : 1)));
+
+      leftCups[0].style.bottom = `${leftTop - 7}px`;
+      rightCups[0].style.bottom = `${rightTop - 7}px`;
+      leftCups[1].style.bottom = `${middleBottom - 7}px`;
+      rightCups[1].style.bottom = `${middleBottom - 7}px`;
+      leftCups[2].style.bottom = `${FIXED_LOWER_RAIL_BOTTOM - 7}px`;
+      rightCups[2].style.bottom = `${FIXED_LOWER_RAIL_BOTTOM - 7}px`;
+
+      rails[0].style.bottom = `${centerTop}px`;
+      rails[1].style.bottom = `${middleBottom}px`;
+      rails[2].style.bottom = `${FIXED_LOWER_RAIL_BOTTOM}px`;
+      rails[0].style.transform = `rotate(${topRotation}deg)`;
+      rails[1].style.transform = 'rotate(0deg)';
+      rails[2].style.transform = 'rotate(0deg)';
 
       $('leftHeight').textContent = state.left_pos_in;
       $('rightHeight').textContent = state.right_pos_in;
