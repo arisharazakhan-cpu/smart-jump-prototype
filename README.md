@@ -11,15 +11,13 @@
 <p align="center">
 
 <a href="https://smart-jump-prototype.onrender.com">
-<img src="https://img.shields.io/badge/Launch%20Live%20Demo-Smart%20Jump-blue?style=for-the-badge&logo=google-chrome">
+<img src="https://img.shields.io/badge/Launch%20Live%20Demo-Smart%20Jump-ff69b4?style=for-the-badge&logo=google-chrome">
+</a>
+&nbsp;
+<a href="https://arisharazakhan-cpu.github.io/smart-jump-prototype/">
+<img src="https://img.shields.io/badge/Play%20on%20GitHub-Interactive%20Demo-e66ca9?style=for-the-badge&logo=github">
 </a>
 
-</p>
-
----
-
-<p align="center">
-<img src="docs/ui_screenshot.png" width="800">
 </p>
 
 ---
@@ -42,12 +40,18 @@ https://smart-jump-prototype.onrender.com
 
 The hosted demo allows you to:
 - set jump height presets
+- drag to any custom height from 12 to 72 inches
+- issue constrained hands-free voice commands
+- watch all three rails move through an animated digital twin
+- inspect live synchronization and safety-gate status
 - trigger synchronized motion
 - simulate desynchronization faults
 - stop motion immediately
 - reset the system
 
 Note: the hosting instance may take about 20 seconds to wake up if idle.
+
+The [standalone GitHub demo](https://arisharazakhan-cpu.github.io/smart-jump-prototype/) runs entirely in the browser, so it does not need the Python server and can be explored immediately.
 
 ---
 
@@ -254,6 +258,14 @@ If a heartbeat is missed beyond the allowed interval, the system transitions to 
 The repository includes a deterministic simulation environment that validates synchronization behavior and fault handling before any physical hardware integration.  
 This allows safety invariants to be tested and verified independently from mechanical implementation.
 
+### Safety-Aware Voice Interaction
+
+The interactive prototype supports a deliberately constrained voice vocabulary for mounted use. Commands such as `set 48 inches`, `status`, and `stop` are converted into structured intents before reaching the orchestrator.
+
+Motion commands must exceed a recognition-confidence threshold and remain inside the configured 12–72 inch range. Ambiguous or low-confidence movement requests are rejected. Stop commands are always honored immediately, even when recognition confidence is low.
+
+The interface includes a typed command fallback for browsers without speech-recognition support.
+
 ---
 
 ## Business Impact
@@ -310,6 +322,10 @@ Current prototype includes:
 - CI integrated safety testing  
 - installable CLI entry point  
 - interactive web control interface  
+- animated arena digital twin
+- safety-aware voice-command interpretation
+- live safety gate and event timeline
+- GitHub Actions test automation
 
 ---
 

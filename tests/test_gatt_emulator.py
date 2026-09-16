@@ -34,3 +34,19 @@ def test_heartbeat_timeout_faults_while_moving():
 
     assert dev.state == "fault"
     assert any(e.get("type") == "fault" and e.get("fault") == "heartbeat_timeout" for e in events)
+
+
+def test_stop_does_not_clear_latched_fault():
+    dev = GattEmulator(controller_id="STD_A", state="fault", position_in=30, target_in=60)
+    dev.write_command({"type": "stop"})
+    assert dev.state == "fault"
+    assert dev.target_in == 30
+
+
+def test_move_is_rejected_outside_idle_ready():
+    dev = GattEmulator(controller_id="STD_A", state="moving", position_in=30, target_in=40)
+    events = []
+    dev.on_notify = events.append
+    dev.write_command({"type": "set_preset", "preset_in": 48})
+    assert dev.target_in == 40
+    assert any(event.get("fault") == "invalid_state" for event in events)
