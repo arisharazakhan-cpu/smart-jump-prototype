@@ -1,6 +1,7 @@
 import pytest
 
 from smartjump.ui import SmartJumpRuntime
+from smartjump.web_ui import DIGITAL_TWIN_HTML
 
 
 def test_voice_height_command_moves_both_standards():
@@ -32,3 +33,10 @@ def test_state_includes_visual_telemetry_fields():
     assert state["difference_in"] == 0
     assert state["controllers_online"] is True
     assert state["events"]
+
+
+def test_demo_has_three_rails_and_standalone_interactions():
+    assert DIGITAL_TWIN_HTML.count('class="rail ') == 3
+    assert "standaloneDemo" in DIGITAL_TWIN_HTML
+    assert 'id="heightSlider"' in DIGITAL_TWIN_HTML
+    assert "Interactive GitHub demo" in DIGITAL_TWIN_HTML

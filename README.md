@@ -11,15 +11,13 @@
 <p align="center">
 
 <a href="https://smart-jump-prototype.onrender.com">
-<img src="https://img.shields.io/badge/Launch%20Live%20Demo-Smart%20Jump-blue?style=for-the-badge&logo=google-chrome">
+<img src="https://img.shields.io/badge/Launch%20Live%20Demo-Smart%20Jump-ff69b4?style=for-the-badge&logo=google-chrome">
+</a>
+&nbsp;
+<a href="https://arisharazakhan-cpu.github.io/smart-jump-prototype/">
+<img src="https://img.shields.io/badge/Play%20on%20GitHub-Interactive%20Demo-e66ca9?style=for-the-badge&logo=github">
 </a>
 
-</p>
-
----
-
-<p align="center">
-<img src="docs/ui_screenshot.png" width="800">
 </p>
 
 ---
@@ -42,8 +40,9 @@ https://smart-jump-prototype.onrender.com
 
 The hosted demo allows you to:
 - set jump height presets
+- drag to any custom height from 12 to 72 inches
 - issue constrained hands-free voice commands
-- watch the jump move through an animated digital twin
+- watch all three rails move through an animated digital twin
 - inspect live synchronization and safety-gate status
 - trigger synchronized motion
 - simulate desynchronization faults
@@ -51,6 +50,8 @@ The hosted demo allows you to:
 - reset the system
 
 Note: the hosting instance may take about 20 seconds to wake up if idle.
+
+The [standalone GitHub demo](https://arisharazakhan-cpu.github.io/smart-jump-prototype/) runs entirely in the browser, so it does not need the Python server and can be explored immediately.
 
 ---
 
