@@ -40,3 +40,11 @@ def test_demo_has_three_rails_and_standalone_interactions():
     assert "standaloneDemo" in DIGITAL_TWIN_HTML
     assert 'id="heightSlider"' in DIGITAL_TWIN_HTML
     assert "Interactive GitHub demo" in DIGITAL_TWIN_HTML
+
+
+def test_demo_uses_progressive_rail_spacing_and_top_only_fault_tilt():
+    assert "FIXED_LOWER_RAIL_BOTTOM" in DIGITAL_TWIN_HTML
+    assert "MIDDLE_RAIL_RATIO = .55" in DIGITAL_TWIN_HTML
+    assert "rails[0].style.transform = `rotate(${topRotation}deg)`" in DIGITAL_TWIN_HTML
+    assert "rails[1].style.transform = 'rotate(0deg)'" in DIGITAL_TWIN_HTML
+    assert "rails[2].style.transform = 'rotate(0deg)'" in DIGITAL_TWIN_HTML
