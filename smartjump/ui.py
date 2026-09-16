@@ -4,11 +4,15 @@ import json
 import threading
 import time
 import webbrowser
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
 from ble.gatt_emulator import GattEmulator
 from app.orchestrator import Orchestrator
+from smartjump.config import MAX_HEIGHT_IN, MIN_HEIGHT_IN, VOICE_CONFIDENCE_THRESHOLD
+from smartjump.voice import interpret_voice_command
+from smartjump.web_ui import DIGITAL_TWIN_HTML
 
 
 HTML = r"""<!doctype html>
@@ -199,6 +203,18 @@ class SmartJumpRuntime:
         self._lock = threading.Lock()
         self._running = False
         self._thread: threading.Thread | None = None
+        self._events: list[dict] = []
+        self._record("System initialized", "system")
+
+    def _record(self, message: str, kind: str = "info") -> None:
+        self._events.append(
+            {
+                "time": datetime.now().strftime("%H:%M:%S"),
+                "message": message,
+                "kind": kind,
+            }
+        )
+        self._events = self._events[-20:]
 
     def start(self) -> None:
         if self._running:
@@ -228,13 +244,23 @@ class SmartJumpRuntime:
                 "right_state": self.right.state,
                 "left_pos_in": self.left.position_in,
                 "right_pos_in": self.right.position_in,
+                "left_target_in": self.left.target_in,
+                "right_target_in": self.right.target_in,
+                "difference_in": abs(self.left.position_in - self.right.position_in),
+                "desync_tolerance_in": self.app.desync_tolerance_in,
+                "min_height_in": MIN_HEIGHT_IN,
+                "max_height_in": MAX_HEIGHT_IN,
+                "controllers_online": True,
+                "heartbeat_active": self.app.state != "app_fault",
                 "last_event": last_event,
                 "last_fault_reason": last_fault_reason,
+                "events": list(reversed(self._events[-8:])),
             }
 
     def set_preset(self, height_in: int) -> None:
         with self._lock:
             self.app.set_preset(int(height_in))
+            self._record(f"Movement requested: {int(height_in)} inches", "command")
 
     def stop(self) -> None:
         with self._lock:
@@ -244,7 +270,9 @@ class SmartJumpRuntime:
             # Hard cancel motion at device layer so movement stops immediately
             for dev in (self.left, self.right):
                 dev.target_in = dev.position_in
-                dev.state = "idle_ready"
+                if dev.state != "fault":
+                    dev.state = "idle_ready"
+            self._record("Emergency stop accepted", "stop")
 
     def reset(self) -> None:
         with self._lock:
@@ -258,6 +286,7 @@ class SmartJumpRuntime:
                 dev.position_in = avg
                 dev.target_in = avg
                 dev.state = "idle_ready"
+            self._record("Fault reset; standards re-synchronized", "reset")
 
     def force_desync(self) -> None:
         with self._lock:
@@ -274,6 +303,44 @@ class SmartJumpRuntime:
             # Force an immediate orchestrator evaluation so the UI updates right away
             # dt_ms=0 means "do not advance motion", but still runs desync checks
             self.app.tick(0)
+            self._record("Desynchronization injected for demonstration", "fault")
+
+    def voice(self, transcript: str, confidence: float) -> dict:
+        command = interpret_voice_command(transcript)
+        with self._lock:
+            self._record(f'Voice heard: "{transcript}"', "voice")
+
+        # A stop command is always honored, even with low recognition confidence.
+        if command.intent == "stop":
+            self.stop()
+            return {"ok": True, "intent": "stop", "spoken_reply": "Stopped."}
+
+        if confidence < VOICE_CONFIDENCE_THRESHOLD:
+            with self._lock:
+                self._record("Voice command rejected: confidence too low", "warning")
+            raise ValueError("Voice confidence is too low. Please repeat the command.")
+
+        if command.intent == "status":
+            snapshot = self.state()
+            return {
+                "ok": True,
+                "intent": "status",
+                "spoken_reply": (
+                    f"The jump is at {snapshot['left_pos_in']} inches and the system is "
+                    f"{snapshot['app_state'].replace('_', ' ')}."
+                ),
+            }
+
+        if command.intent == "set_height" and command.height_in is not None:
+            self.set_preset(command.height_in)
+            return {
+                "ok": True,
+                "intent": "set_height",
+                "height_in": command.height_in,
+                "spoken_reply": f"Setting both standards to {command.height_in} inches.",
+            }
+
+        raise ValueError("Voice command could not be completed.")
 
 def run_ui(host: str = "127.0.0.1", port: int = 8000, open_browser: bool = True) -> int:
     runtime = SmartJumpRuntime()
@@ -295,7 +362,7 @@ def run_ui(host: str = "127.0.0.1", port: int = 8000, open_browser: bool = True)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.send_header("Cache-Control", "no-store")
                 self.end_headers()
-                self.wfile.write(HTML.encode("utf-8"))
+                self.wfile.write(DIGITAL_TWIN_HTML.encode("utf-8"))
                 return
 
             if path == "/api/state":
@@ -308,11 +375,37 @@ def run_ui(host: str = "127.0.0.1", port: int = 8000, open_browser: bool = True)
             path = urlparse(self.path).path
             length = int(self.headers.get("Content-Length", "0") or "0")
             body = self.rfile.read(length).decode("utf-8") if length else ""
-            data = json.loads(body) if body else {}
+            try:
+                data = json.loads(body) if body else {}
+            except json.JSONDecodeError:
+                self._send_json(400, {"ok": False, "error": "invalid_json"})
+                return
 
             if path == "/api/preset":
-                runtime.set_preset(data.get("height_in", 36))
-                self._send_json(200, {"ok": True})
+                try:
+                    runtime.set_preset(int(data.get("height_in", 36)))
+                except (TypeError, ValueError) as exc:
+                    self._send_json(400, {"ok": False, "error": str(exc)})
+                    return
+                except RuntimeError as exc:
+                    self._send_json(409, {"ok": False, "error": str(exc)})
+                    return
+                self._send_json(200, {"ok": True, "state": runtime.state()})
+                return
+
+            if path == "/api/voice":
+                try:
+                    result = runtime.voice(
+                        str(data.get("transcript", "")),
+                        float(data.get("confidence", 1.0)),
+                    )
+                except (TypeError, ValueError) as exc:
+                    self._send_json(400, {"ok": False, "error": str(exc)})
+                    return
+                except RuntimeError as exc:
+                    self._send_json(409, {"ok": False, "error": str(exc)})
+                    return
+                self._send_json(200, result)
                 return
 
             if path == "/api/stop":

@@ -42,6 +42,9 @@ https://smart-jump-prototype.onrender.com
 
 The hosted demo allows you to:
 - set jump height presets
+- issue constrained hands-free voice commands
+- watch the jump move through an animated digital twin
+- inspect live synchronization and safety-gate status
 - trigger synchronized motion
 - simulate desynchronization faults
 - stop motion immediately
@@ -254,6 +257,14 @@ If a heartbeat is missed beyond the allowed interval, the system transitions to 
 The repository includes a deterministic simulation environment that validates synchronization behavior and fault handling before any physical hardware integration.  
 This allows safety invariants to be tested and verified independently from mechanical implementation.
 
+### Safety-Aware Voice Interaction
+
+The interactive prototype supports a deliberately constrained voice vocabulary for mounted use. Commands such as `set 48 inches`, `status`, and `stop` are converted into structured intents before reaching the orchestrator.
+
+Motion commands must exceed a recognition-confidence threshold and remain inside the configured 12–72 inch range. Ambiguous or low-confidence movement requests are rejected. Stop commands are always honored immediately, even when recognition confidence is low.
+
+The interface includes a typed command fallback for browsers without speech-recognition support.
+
 ---
 
 ## Business Impact
@@ -310,6 +321,10 @@ Current prototype includes:
 - CI integrated safety testing  
 - installable CLI entry point  
 - interactive web control interface  
+- animated arena digital twin
+- safety-aware voice-command interpretation
+- live safety gate and event timeline
+- GitHub Actions test automation
 
 ---
 

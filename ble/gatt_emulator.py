@@ -34,13 +34,18 @@ class GattEmulator:
         t = msg.get("type")
 
         if t == "stop":
-            self.state = "idle_ready"
+            # Stop motion immediately without silently clearing a latched fault.
+            if self.state != "fault":
+                self.state = "idle_ready"
             self.target_in = self.position_in
             self._emit({"type": "ack", "ack": "stop"})
             self._emit_state()
             return
 
         if t == "set_preset":
+            if self.state != "idle_ready":
+                self._emit({"type": "fault", "fault": "invalid_state"})
+                return
             preset = int(msg["preset_in"])
             self.target_in = preset
             self.state = "moving"
@@ -52,7 +57,7 @@ class GattEmulator:
             self._emit({"type": "ack", "ack": "home"})
             return
 
-        if t == "reset_fault":
+        if t in ("reset", "reset_fault"):
             if self.state == "fault":
                 self.state = "idle_ready"
                 self._emit({"type": "ack", "ack": "reset_fault"})

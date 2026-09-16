@@ -7,6 +7,7 @@ Enforces synchronization, heartbeat, and fail safe logic.
 
 from typing import Dict, Any, Optional
 from ble.gatt_emulator import GattEmulator
+from smartjump.config import MAX_HEIGHT_IN, MIN_HEIGHT_IN
 
 
 class Orchestrator:
@@ -25,8 +26,12 @@ class Orchestrator:
         self.right_last: Optional[Dict[str, Any]] = None
 
     def set_preset(self, height_in: int) -> None:
+        if not MIN_HEIGHT_IN <= int(height_in) <= MAX_HEIGHT_IN:
+            raise ValueError(
+                f"Height must be between {MIN_HEIGHT_IN} and {MAX_HEIGHT_IN} inches."
+            )
         if self.state != "app_idle":
-            return
+            raise RuntimeError("The system must be idle before starting a new movement.")
         self.state = "app_moving"
         self.left.write_command({"type": "set_preset", "preset_in": height_in})
         self.right.write_command({"type": "set_preset", "preset_in": height_in})
@@ -48,7 +53,8 @@ class Orchestrator:
 
     def user_stop(self) -> None:
         self.stop_all()
-        self.state = "app_idle"
+        if self.state != "app_fault":
+            self.state = "app_idle"
 
     def _handle_left(self, msg: Dict[str, Any]) -> None:
         self.left_last = msg

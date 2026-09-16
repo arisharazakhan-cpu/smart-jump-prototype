@@ -1,0 +1,453 @@
+"""Browser interface for the Smart Jump digital-twin demonstration."""
+
+DIGITAL_TWIN_HTML = r"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Jump Digital Twin</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1110;
+      --shell: #121a18;
+      --panel: #18221f;
+      --panel-2: #202d29;
+      --text: #f2f7f4;
+      --muted: #a8b7b1;
+      --line: #31413b;
+      --green: #64d3a4;
+      --green-deep: #17372d;
+      --blue: #79aefa;
+      --red: #ff7c78;
+      --red-deep: #421f20;
+      --amber: #f2bd60;
+      --sand: #4b3e2d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 0%, #172420 0, var(--bg) 36%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+    .app { min-height: 100vh; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(11,17,16,.88);
+      backdrop-filter: blur(16px);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; }
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: var(--green);
+      color: #09130f;
+      font-weight: 800;
+    }
+    .brand strong { display: block; font-size: 15px; }
+    .brand span, .muted { color: var(--muted); font-size: 12px; }
+    .system-status { display: flex; align-items: center; gap: 9px; color: var(--green); font-size: 13px; font-weight: 650; }
+    .status-dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; box-shadow: 0 0 15px currentColor; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, .75fr); min-height: calc(100vh - 65px); }
+    .main { padding: 20px; }
+    .sidebar { padding: 20px; border-left: 1px solid var(--line); background: rgba(18,26,24,.76); }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 15px; }
+    .mode-label { color: var(--muted); font-size: 12px; }
+    .arena {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #172725 0 55%, var(--sand) 55% 100%);
+      box-shadow: inset 0 0 80px rgba(0,0,0,.2);
+    }
+    .arena::before {
+      content: "";
+      position: absolute;
+      inset: 55% 0 auto;
+      height: 2px;
+      background: rgba(255,255,255,.1);
+      box-shadow: 0 55px 0 rgba(0,0,0,.12), 0 110px 0 rgba(0,0,0,.1);
+    }
+    .arena::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(100deg, transparent 0 42%, rgba(255,255,255,.035) 50%, transparent 58%);
+    }
+    .perspective-line { position: absolute; left: 50%; bottom: 0; width: 1px; height: 45%; transform-origin: bottom; background: rgba(255,255,255,.08); }
+    .perspective-line.a { transform: rotate(64deg); }
+    .perspective-line.b { transform: rotate(-64deg); }
+    .jump {
+      position: absolute;
+      left: 50%;
+      top: 55%;
+      width: min(69%, 520px);
+      height: 240px;
+      transform: translate(-50%, -50%);
+    }
+    .standard {
+      position: absolute;
+      bottom: 0;
+      width: 15px;
+      height: 225px;
+      border-radius: 8px 8px 3px 3px;
+      background: linear-gradient(90deg, #285445, #69ae92);
+      box-shadow: 0 12px 24px rgba(0,0,0,.3);
+    }
+    .standard.left { left: 0; }
+    .standard.right { right: 0; }
+    .standard::after { content: ""; position: absolute; left: -22px; bottom: -4px; width: 59px; height: 9px; border-radius: 6px; background: inherit; }
+    .marks { position: absolute; inset: 20px 3px 18px; background: repeating-linear-gradient(180deg, transparent 0 17px, rgba(255,255,255,.2) 17px 18px); }
+    .pole {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 104px;
+      height: 13px;
+      border-radius: 7px;
+      transform-origin: center;
+      transition: bottom .38s ease, transform .25s ease;
+      background: repeating-linear-gradient(90deg, #f6f1e3 0 45px, #2f866b 45px 90px);
+      box-shadow: 0 7px 18px rgba(0,0,0,.32);
+    }
+    .cup { position: absolute; width: 29px; height: 22px; bottom: 97px; border-radius: 4px 4px 10px 10px; background: var(--amber); transition: bottom .38s ease; }
+    .cup.left { left: -1px; }
+    .cup.right { right: -1px; }
+    .voice-node {
+      position: absolute;
+      left: -15px;
+      top: 42px;
+      display: grid;
+      place-items: center;
+      width: 45px;
+      height: 45px;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      background: var(--shell);
+      color: var(--green);
+      box-shadow: 0 7px 22px rgba(0,0,0,.36);
+      font-size: 19px;
+    }
+    .height-label { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--shell); font-size: 12px; }
+    .scene-message { position: absolute; left: 14px; bottom: 13px; display: flex; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid rgba(100,211,164,.35); border-radius: 11px; background: rgba(11,17,16,.83); color: var(--green); font-size: 12px; backdrop-filter: blur(8px); }
+    .scene-message::before { content: "✓"; font-weight: 800; }
+    .fault .system-status, .fault .scene-message { color: var(--red); }
+    .fault .scene-message { border-color: rgba(255,124,120,.45); }
+    .fault .scene-message::before { content: "!"; }
+    .telemetry { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+    .metric { padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--shell); }
+    .metric span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 5px; }
+    .metric strong { font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
+    .stack { display: grid; gap: 14px; }
+    .panel { padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: var(--panel); }
+    .voice-panel.listening { border-color: var(--green); box-shadow: 0 0 0 3px rgba(100,211,164,.08); }
+    .voice-state { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; color: var(--muted); font-size: 11px; }
+    .wave { display: flex; align-items: center; justify-content: center; gap: 4px; height: 42px; margin: 5px 0; }
+    .wave i { width: 4px; border-radius: 4px; background: var(--green); animation: wave 1s ease-in-out infinite; }
+    .wave i:nth-child(1), .wave i:nth-child(7) { height: 10px; }
+    .wave i:nth-child(2), .wave i:nth-child(6) { height: 20px; animation-delay: .1s; }
+    .wave i:nth-child(3), .wave i:nth-child(5) { height: 30px; animation-delay: .2s; }
+    .wave i:nth-child(4) { height: 39px; animation-delay: .3s; }
+    .wave.paused i { animation-play-state: paused; opacity: .34; }
+    @keyframes wave { 0%,100% { transform: scaleY(.5); } 50% { transform: scaleY(1); } }
+    .transcript { min-height: 40px; text-align: center; font-size: 14px; line-height: 1.4; }
+    .confidence { height: 6px; margin: 8px 0 12px; overflow: hidden; border-radius: 6px; background: var(--panel-2); }
+    .confidence span { display: block; width: 0%; height: 100%; background: var(--green); transition: width .25s ease; }
+    .voice-entry { display: grid; grid-template-columns: 1fr auto auto; gap: 7px; }
+    input { min-width: 0; padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); background: var(--shell); font-size: 12px; }
+    .button { min-height: 39px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); background: var(--shell); font-size: 12px; font-weight: 650; }
+    .button:hover { background: var(--panel-2); }
+    .button.primary { border-color: var(--green); color: #08130f; background: var(--green); }
+    .button.danger { border-color: rgba(255,124,120,.5); color: var(--red); }
+    .button.mic { width: 42px; padding: 0; font-size: 17px; }
+    .presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 10px; }
+    .safety-list { display: grid; gap: 8px; margin-top: 11px; }
+    .safety-row { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; }
+    .safety-row b { color: var(--green); font-weight: 650; }
+    .safety-row b.bad { color: var(--red); }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 12px; }
+    .events { margin-top: 6px; }
+    .event { display: grid; grid-template-columns: 58px 1fr; gap: 9px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 11px; }
+    .event:last-child { border-bottom: 0; padding-bottom: 0; }
+    .event time { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .event.fault span, .event.stop span { color: var(--red); }
+    .event.voice span { color: var(--blue); }
+    .toast { position: fixed; right: 18px; bottom: 18px; z-index: 50; max-width: 360px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--shell); box-shadow: 0 15px 40px rgba(0,0,0,.35); font-size: 12px; transform: translateY(16px); opacity: 0; pointer-events: none; transition: .2s ease; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { border-color: rgba(255,124,120,.5); color: var(--red); }
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { border-left: 0; border-top: 1px solid var(--line); }
+      .telemetry { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px) {
+      .topbar, .main, .sidebar { padding: 14px; }
+      .system-status { max-width: 46%; text-align: right; }
+      .arena { min-height: 350px; }
+      .jump { width: 82%; }
+      .voice-entry { grid-template-columns: 1fr auto; }
+      .voice-entry input { grid-column: 1 / -1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand"><div class="logo">SJ</div><div><strong>Smart Jump</strong><span>Voice-enabled arena control</span></div></div>
+      <div class="system-status" aria-live="polite"><span class="status-dot"></span><span id="systemStatus">Connecting…</span></div>
+    </header>
+
+    <div class="layout">
+      <main class="main">
+        <div class="section-head"><div><h1>Live arena twin</h1><p class="muted">Synchronized motion and safety supervision</p></div><span class="mode-label">Simulation mode</span></div>
+        <section class="arena" aria-label="Digital twin of two synchronized jump standards">
+          <span class="perspective-line a"></span><span class="perspective-line b"></span>
+          <div class="jump">
+            <div class="standard left"><span class="marks"></span><span class="voice-node" aria-label="Voice control module">●</span></div>
+            <div class="standard right"><span class="marks"></span></div>
+            <div class="cup left" id="leftCup"></div><div class="cup right" id="rightCup"></div>
+            <div class="pole" id="pole"></div>
+            <div class="height-label"><span id="targetHeight">36</span> in target</div>
+          </div>
+          <div class="scene-message" id="sceneMessage">Clear zone verified · safe to move</div>
+        </section>
+        <section class="telemetry" aria-live="polite">
+          <div class="metric"><span>Left standard</span><strong><span id="leftHeight">--</span> in</strong></div>
+          <div class="metric"><span>Right standard</span><strong><span id="rightHeight">--</span> in</strong></div>
+          <div class="metric"><span>Difference</span><strong><span id="difference">--</span> in</strong></div>
+          <div class="metric"><span>Tolerance</span><strong><span id="tolerance">--</span> in</strong></div>
+        </section>
+      </main>
+
+      <aside class="sidebar">
+        <div class="stack">
+          <section class="panel voice-panel" id="voicePanel">
+            <h2>Rider voice command</h2>
+            <div class="voice-state"><span id="voiceState">Ready</span><span id="confidenceLabel">Confidence --</span></div>
+            <div class="wave paused" id="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <p class="transcript" id="transcript">Say “Smart Jump, set forty-eight inches.”</p>
+            <div class="confidence" aria-label="Recognition confidence"><span id="confidenceBar"></span></div>
+            <div class="voice-entry">
+              <input id="commandText" aria-label="Voice command fallback" value="Smart Jump, set 48 inches">
+              <button class="button" id="sendCommand" type="button">Send</button>
+              <button class="button primary mic" id="listenButton" type="button" aria-label="Start voice recognition">●</button>
+            </div>
+            <div class="presets" aria-label="Height presets">
+              <button class="button preset" data-height="24" type="button">24 in</button>
+              <button class="button preset" data-height="36" type="button">36 in</button>
+              <button class="button preset" data-height="48" type="button">48 in</button>
+              <button class="button preset" data-height="60" type="button">60 in</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Safety gate</h2>
+            <div class="safety-list">
+              <div class="safety-row"><span>Both controllers online</span><b id="controllersCheck">Checking</b></div>
+              <div class="safety-row"><span>Heartbeat active</span><b id="heartbeatCheck">Checking</b></div>
+              <div class="safety-row"><span>Synchronization</span><b id="syncCheck">Checking</b></div>
+              <div class="safety-row"><span>Height within limits</span><b id="heightCheck">Checking</b></div>
+            </div>
+            <div class="actions">
+              <button class="button danger" id="stopButton" type="button">Emergency stop</button>
+              <button class="button" id="faultButton" type="button">Simulate fault</button>
+              <button class="button" id="resetButton" type="button">Reset system</button>
+              <button class="button" id="statusButton" type="button">Speak status</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Event timeline</h2>
+            <div class="events" id="events"><div class="event"><time>--:--:--</time><span>Loading system events…</span></div></div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const app = $('app');
+    const pole = $('pole');
+    const leftCup = $('leftCup');
+    const rightCup = $('rightCup');
+    const toast = $('toast');
+    let lastState = null;
+    let toastTimer;
+
+    async function api(path, body = null) {
+      const options = body === null ? {} : {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body)
+      };
+      const response = await fetch(path, options);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    function notify(message, error = false) {
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.className = `toast show${error ? ' error' : ''}`;
+      toastTimer = setTimeout(() => toast.className = 'toast', 3200);
+    }
+
+    function cupBottom(height) {
+      const min = lastState?.min_height_in ?? 12;
+      const max = lastState?.max_height_in ?? 72;
+      const clamped = Math.max(min, Math.min(max, height));
+      return 46 + ((clamped - min) / (max - min)) * 142;
+    }
+
+    function renderState(state) {
+      lastState = state;
+      const leftBottom = cupBottom(state.left_pos_in);
+      const rightBottom = cupBottom(state.right_pos_in);
+      leftCup.style.bottom = `${leftBottom - 7}px`;
+      rightCup.style.bottom = `${rightBottom - 7}px`;
+      pole.style.bottom = `${(leftBottom + rightBottom) / 2}px`;
+      pole.style.transform = `rotate(${Math.max(-8, Math.min(8, state.difference_in * (state.left_pos_in > state.right_pos_in ? -1 : 1)))}deg)`;
+
+      $('leftHeight').textContent = state.left_pos_in;
+      $('rightHeight').textContent = state.right_pos_in;
+      $('difference').textContent = Number(state.difference_in).toFixed(1);
+      $('tolerance').textContent = Number(state.desync_tolerance_in).toFixed(1);
+      $('targetHeight').textContent = state.left_target_in;
+
+      const isFault = state.app_state === 'app_fault';
+      const isMoving = state.app_state === 'app_moving';
+      app.classList.toggle('fault', isFault);
+      $('systemStatus').textContent = isFault ? 'Fault · coordinated stop issued' : isMoving ? 'Moving · synchronized command active' : 'Ready · both standards connected';
+      $('sceneMessage').textContent = isFault ? `Desynchronization detected · ${state.difference_in} in difference` : isMoving ? 'Coordinated motion in progress' : 'Stable safe state · awaiting command';
+
+      setCheck('controllersCheck', state.controllers_online, state.controllers_online ? 'Passed' : 'Offline');
+      setCheck('heartbeatCheck', state.heartbeat_active, state.heartbeat_active ? 'Passed' : 'Stopped');
+      setCheck('syncCheck', !isFault && state.difference_in <= state.desync_tolerance_in, isFault ? 'Fault' : 'Passed');
+      const inRange = state.left_target_in >= state.min_height_in && state.left_target_in <= state.max_height_in;
+      setCheck('heightCheck', inRange, inRange ? 'Passed' : 'Blocked');
+
+      const events = state.events || [];
+      $('events').innerHTML = events.length ? events.map(event => `
+        <div class="event ${escapeHtml(event.kind)}"><time>${escapeHtml(event.time)}</time><span>${escapeHtml(event.message)}</span></div>
+      `).join('') : '<div class="event"><time>Now</time><span>No events recorded</span></div>';
+    }
+
+    function setCheck(id, passed, label) {
+      const element = $(id);
+      element.textContent = label;
+      element.classList.toggle('bad', !passed);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    }
+
+    async function refresh() {
+      try { renderState(await api('/api/state')); }
+      catch (error) { $('systemStatus').textContent = 'Connection unavailable'; }
+    }
+
+    async function preset(height) {
+      try {
+        await api('/api/preset', {height_in: Number(height)});
+        notify(`Moving both standards to ${height} inches.`);
+        refresh();
+      } catch (error) { notify(error.message, true); }
+    }
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+    }
+
+    async function submitVoice(transcript, confidence = 1) {
+      $('transcript').textContent = `“${transcript}”`;
+      $('confidenceBar').style.width = `${Math.round(confidence * 100)}%`;
+      $('confidenceLabel').textContent = `Confidence ${Math.round(confidence * 100)}%`;
+      $('voiceState').textContent = 'Interpreting command';
+      try {
+        const result = await api('/api/voice', {transcript, confidence});
+        $('voiceState').textContent = 'Command accepted';
+        speak(result.spoken_reply);
+        notify(result.spoken_reply);
+        refresh();
+      } catch (error) {
+        $('voiceState').textContent = 'Command rejected safely';
+        notify(error.message, true);
+        speak(`Command rejected. ${error.message}`);
+      }
+    }
+
+    function startListening() {
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Recognition) {
+        notify('Live speech recognition is unavailable in this browser. Use the command field.', true);
+        $('commandText').focus();
+        return;
+      }
+      const recognition = new Recognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      $('voicePanel').classList.add('listening');
+      $('wave').classList.remove('paused');
+      $('voiceState').textContent = 'Listening';
+      $('transcript').textContent = 'Listening for a rider command…';
+      recognition.onresult = (event) => {
+        const result = event.results[0][0];
+        $('commandText').value = result.transcript;
+        submitVoice(result.transcript, result.confidence || .9);
+      };
+      recognition.onerror = (event) => notify(`Microphone error: ${event.error}`, true);
+      recognition.onend = () => {
+        $('voicePanel').classList.remove('listening');
+        $('wave').classList.add('paused');
+        if ($('voiceState').textContent === 'Listening') $('voiceState').textContent = 'Ready';
+      };
+      recognition.start();
+    }
+
+    document.querySelectorAll('.preset').forEach(button => button.addEventListener('click', () => preset(button.dataset.height)));
+    $('sendCommand').addEventListener('click', () => submitVoice($('commandText').value, 1));
+    $('commandText').addEventListener('keydown', event => { if (event.key === 'Enter') submitVoice(event.currentTarget.value, 1); });
+    $('listenButton').addEventListener('click', startListening);
+    $('stopButton').addEventListener('click', async () => { try { await api('/api/stop', {}); speak('Stopped.'); notify('Emergency stop accepted.'); refresh(); } catch (error) { notify(error.message, true); } });
+    $('faultButton').addEventListener('click', async () => { try { await api('/api/force_desync', {}); notify('Demonstration fault injected.'); refresh(); } catch (error) { notify(error.message, true); } });
+    $('resetButton').addEventListener('click', async () => { try { await api('/api/reset', {}); notify('System reset.'); refresh(); } catch (error) { notify(error.message, true); } });
+    $('statusButton').addEventListener('click', () => submitVoice('What height is the jump?', 1));
+
+    setInterval(refresh, 250);
+    refresh();
+  </script>
+</body>
+</html>
+"""
