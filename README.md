@@ -51,8 +51,6 @@ The hosted demo allows you to:
 - stop motion immediately
 - reset the system
 
-The GitHub Pages demo runs entirely in the browser, so it opens immediately without waiting for a server to wake up.
-
 ---
 
 ## The Problem
