@@ -10,12 +10,8 @@
 
 <p align="center">
 
-<a href="https://smart-jump-prototype.onrender.com">
-<img src="https://img.shields.io/badge/Launch%20Live%20Demo-Smart%20Jump-ff69b4?style=for-the-badge&logo=google-chrome">
-</a>
-&nbsp;
 <a href="https://arisharazakhan-cpu.github.io/smart-jump-prototype/">
-<img src="https://img.shields.io/badge/Play%20on%20GitHub-Interactive%20Demo-e66ca9?style=for-the-badge&logo=github">
+<img src="https://img.shields.io/badge/Launch%20Interactive%20Demo-Smart%20Jump-e66ca9?style=for-the-badge&logo=github">
 </a>
 
 </p>
@@ -36,7 +32,13 @@ This repository focuses on synchronization guarantees, safety invariants, and la
 
 Open the live Smart Jump interface:
 
-https://smart-jump-prototype.onrender.com
+https://arisharazakhan-cpu.github.io/smart-jump-prototype/
+
+<p align="center">
+<a href="https://arisharazakhan-cpu.github.io/smart-jump-prototype/">
+<img src="docs/smart_jump_interface.jpg?raw=1" width="1000" alt="Smart Jump interactive digital twin with voice controls, synchronized rails, safety gates, and event timeline">
+</a>
+</p>
 
 The hosted demo allows you to:
 - set jump height presets
@@ -49,55 +51,7 @@ The hosted demo allows you to:
 - stop motion immediately
 - reset the system
 
-Note: the hosting instance may take about 20 seconds to wake up if idle.
-
-The [standalone GitHub demo](https://arisharazakhan-cpu.github.io/smart-jump-prototype/) runs entirely in the browser, so it does not need the Python server and can be explored immediately.
-
----
-
-## Live API Demo
-
-Check system state:
-
-```bash
-curl -s https://smart-jump-prototype.onrender.com/api/state | python3 -m json.tool
-```
-
-Move to a preset height:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/preset \
-  -H 'Content-Type: application/json' \
-  -d '{"height_in":60}' | python3 -m json.tool
-```
-
-Force a desynchronization fault:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/force_desync | python3 -m json.tool
-```
-
-Stop motion:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/stop | python3 -m json.tool
-```
-
-Reset fault:
-
-```bash
-curl -s -X POST https://smart-jump-prototype.onrender.com/api/reset | python3 -m json.tool
-```
-
----
-
-## Simulation Demonstration
-
-The animation below shows synchronized movement, forced desynchronization, and the automatic coordinated halt.
-
-<p align="center">
-<img src="docs/demo.gif?raw=1" width="700">
-</p>
+The GitHub Pages demo runs entirely in the browser, so it opens immediately without waiting for a server to wake up.
 
 ---
 
